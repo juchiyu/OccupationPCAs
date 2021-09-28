@@ -1,0 +1,44 @@
+---
+title: "2_results summary"
+author: "Ju-Chi.Yu"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    keep_md: true
+    css: styles.css
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+<style type="text/css">
+.main-container {
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r set-options, echo=FALSE, cache=FALSE, include = FALSE}
+
+options(width = 999)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      cache = FALSE, tidy = FALSE, size = "big")
+
+```
+
+```{r, include=FALSE, cache=FALSE}
+knitr::read_chunk('2_results summary.R')
+```
+
+```{r Packages, include = FALSE}
+```
+
+```{r read.res}
+load("Results/from1_DatPcaClus.rda")
+```
+
