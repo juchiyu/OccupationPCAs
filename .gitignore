@@ -2,4 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-ShinyApp/rsconnect/
+/Data/.RData
+/Data/.Rhistory

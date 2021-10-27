@@ -1,0 +1,13 @@
+name: ONETrowClust
+title: ONETrowClust
+username:
+account: lukemoraglia
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4660562
+bundleId: 5091376
+url: https://lukemoraglia.shinyapps.io/ONETrowClust/
+when: 1633040813.92664
+lastSyncTime: 1633040813.92664
+asMultiple: FALSE
+asStatic: FALSE

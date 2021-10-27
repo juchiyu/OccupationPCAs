@@ -42,6 +42,7 @@ job.zone.col <- c(`1` = "darkgoldenrod2",
                   `5` = "darkorange4")
 jb.col_45 <- jb.col_123 <- jb.col_all <- list()
 jb.col_45$gc <- jb.col_123$gc <- jb.col_all$gc <- job.zone.col %>% as.matrix
+
 jb.col_all$oc <- recode(onet.jz_all, !!!job.zone.col)
 jb.col_45$oc <- recode(onet.jz_45, !!!job.zone.col)
 jb.col_123$oc <- recode(onet.jz_123, !!!job.zone.col)
@@ -263,7 +264,7 @@ grid.arrange(grobs = list(jbplt_all, fiplt_all, fjplt_all),
 dev.off()
 
 ## vertical
-png(filename =  "Figure2b-CW_202109.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure2b-CW_202110.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_all_23, fiplt_all_23, fjplt_all_23),
              widths = c(0.2, 1.5,0.2),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
@@ -291,7 +292,7 @@ dev.off()
 # dev.off()
 
 ### vertical
-png(filename =  "Figure3-CW_202109.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure3-CW_202110.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_jz45, fiplt_jz45, fjplt_jz45),
              widths = c(0.2, 1.5,0.2),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
@@ -318,7 +319,7 @@ dev.off()
 # dev.off()
 
 ### vertical
-png(filename =  "Figure4-CW_202109.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure4-CW_202110.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_jz123, fiplt_jz123, fjplt_jz123),
              widths = c(0.3, 1.5,0.3),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
