@@ -16,18 +16,10 @@ library(stringr)
 library(shinyFeedback)
 library(PTCA4CATA)
 
-# Data from Paper analysis
-load("pcaANDrowdis.rda")
-D.row.all <- D.row
-load("Drow123.rda")
-D.row.123 <- D.row
-load("Drow45.rda")
-D.row.45 <- D.row
-rm(D.row)
-
 onet_data <- read.csv("AKS-ONET-JZ-CAT-FEB2020.csv")
 source("function_PCA_dist.R")
-load("paper_figure_data.rda")
+# If this is updated in the main repo, it will need to be copied in to update here
+load("data/from2_Dat4Plot.rda")
 source("fi_plotly.R")
 
 ui <- navbarPage(
@@ -39,19 +31,22 @@ ui <- navbarPage(
              fluidRow(
                  column(2,
                         selectInput("pca", "Select job zones:",
-                                    choices = list("All job zones" = "all",
-                                                   "1, 2, & 3" = "123",
-                                                   "4 & 5" = "45"),
+                                    choices = list("All job zones (General)" = "all",
+                                                   "1, 2, & 3 (Labor)" = "123",
+                                                   "4 & 5 (Cognitive)" = "45"),
                                     width = '100%'
                                     ),
                         checkboxInput("fi_means", "Plot means?", value = TRUE),
-                        selectInput("color_scheme", "Select color scheme:",
-                                    choices = list("Green-Yellow" = '4',
-                                                   "By Categories" = '2',
-                                                   "Orange, Violet, Green" = '3',
-                                                   "By Clustering" = '1'),
-                                    width = '100%'
-                                    ),
+                        # Removing color choice as of 2021-10-28 until I can update the color vectors
+                        # to reflect changes in group names
+                        
+                        # selectInput("color_scheme", "Select color scheme:",
+                        #             choices = list("Green-Yellow" = '4',
+                        #                            "By Categories" = '2',
+                        #                            "Orange, Violet, Green" = '3',
+                        #                            "By Clustering" = '1'),
+                        #             width = '100%'
+                        #             ),
                         downloadButton("downloadData", "Download Clusters", style = "width:100%"),
                         hr(style = "height:5px"),
                         actionButton("showhelp", "Help", 
@@ -70,8 +65,9 @@ ui <- navbarPage(
              shinyFeedback::useShinyFeedback(),
              fluidRow(
                  column(2,
+                        p("Which Job Zones?"),
                         checkboxGroupInput("whichJobZones",
-                                           "Which Job Zones?",
+                                           label = NULL,
                                            choices = list(1,
                                                           2,
                                                           3,
@@ -79,6 +75,17 @@ ui <- navbarPage(
                                                           5),
                                            inline = TRUE
                                            ),
+                        p("How do you want to generate the clusters?"),
+                        radioGroupButtons(inputId = "clus_method",
+                                          label = NULL,
+                                          choices = c("Hierarchical", "K-means"),
+                                          selected = "Hierarchical",
+                                          status = "success"),
+                        p("Optionally, set a seed for reproducible K-means"),
+                        numericInput("seed", 
+                                     label = NULL,
+                                     value = NULL,
+                                     width = "25%"),
                         actionButton("runPCA", "Run PCA and clustering!", width = '100%'),
                         hr(),
                         sliderInput(inputId = "sandNumClus",
@@ -131,7 +138,7 @@ server <- function(input, output) {
     output$fi_plot <- renderPlotly({
         fi_plotly(pca_res()$fi[,1:2], 
                   occu_clust()$list, 
-                  occu_clust()$col[[strtoi(input$color_scheme)]], 
+                  occu_clust()$col, 
                   input$fi_means)
     })
     
