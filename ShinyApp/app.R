@@ -205,12 +205,22 @@ server <- function(input, output) {
     
     sand_clus <- reactive({
         req(sand_res())
-        fit.r <- hclust(sand_res()$row.dist, method = "ward.D2")
-        clus.grpR <- matrix(NA, nrow = length(fit.r$labels), ncol = 1, 
-                            dimnames = list(c(fit.r$labels[fit.r$order]), paste0()))
-        get.clus <- as.matrix(cutree(fit.r, k = input$sandNumClus))
-        clus.grpR <- get.clus[rownames(clus.grpR),]
-        clus.count <- table(clus.grpR)
+        if(input$clus_method == "Hierarchical"){
+          fit.r <- hclust(sand_res()$row.dist, method = "ward.D2")
+          clus.grpR <- matrix(NA, nrow = length(fit.r$labels), ncol = 1, 
+                              dimnames = list(c(fit.r$labels[fit.r$order]), paste0()))
+          get.clus <- as.matrix(cutree(fit.r, k = input$sandNumClus))
+          clus.grpR <- get.clus[rownames(clus.grpR),]
+          clus.count <- table(clus.grpR)
+        }
+        else if(input$clus_method == "K-means"){
+          if(is.numeric(input$seed)){
+            set.seed(input$seed)
+          }
+          reskmeans <- kmeans(sand_res()$row.dist, input$sandNumClus)
+          clus.grpR <- reskmeans$cluster
+          clus.count <- reskmeans$size
+        }
         return(list(clus.grpR = clus.grpR, clus.count = clus.count))
     })
     
