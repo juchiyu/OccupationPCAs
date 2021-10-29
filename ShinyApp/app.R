@@ -64,7 +64,7 @@ ui <- navbarPage(
     tabPanel("The Sandbox",
              shinyFeedback::useShinyFeedback(),
              fluidRow(
-                 column(2,
+                 column(4,
                         p("Which Job Zones?"),
                         checkboxGroupInput("whichJobZones",
                                            label = NULL,
@@ -86,8 +86,9 @@ ui <- navbarPage(
                                      label = NULL,
                                      value = NULL,
                                      width = "25%"),
-                        actionButton("runPCA", "Run PCA and clustering!", width = '100%'),
-                        hr(),
+                        actionButton("runPCA", "Run PCA and clustering!", width = '100%')
+                 ),
+                 column(4,
                         sliderInput(inputId = "sandNumClus",
                                     label = "Number of clusters (K):",
                                     min = 6, max = 30, step = 1, value = 10),
@@ -97,12 +98,18 @@ ui <- navbarPage(
                         hr(),
                         actionButton("sand_showhelp", "Help", 
                                      icon = icon("question-circle")
-                        )
+                                    )
                         ),
+                column(4
+                  
+                )        
                         
-                        
-                 column(10,
-                        tableOutput("sand_clus_table"))
+                 
+             ),
+             fluidRow(
+               column(12,
+                      tableOutput("sand_clus_table")
+                      )
              ),
              hr(),
              fluidRow(
@@ -323,10 +330,12 @@ server <- function(input, output) {
           \"levels of education, experience, and training necessary to perform the occupation.\"
           "),
         p("The current page (The Sandbox) lets you run your own PCA and clustering.
-          On the left, select which job zones to include and hit \"Run PCA and clustering!\" It may take a
+          Select which job zones to include, and which type of clustering to perform.
+          Optionally, you can set an integer seed so that your K-Means clusters are reproducible.
+          Then hit \"Run PCA and clustering!\" It may take a
           moment to run the analysis. Once it has finished, you can drag the \"Number of clusters (K)\"
           slider to select how many clusters you would like to keep. The sizes of the clusters are displayed
-          to the left at top, and a PCA factor scores plot colored by cluster is displayed below.",
+          in a table, and a PCA factor scores plot colored by cluster is displayed below.",
           span("Note: if you change your job zones selection, you must re-click the \"Run PCA and clustering!\" button.",
                style = "font-style:italic")),
         p("To look at each cluster by itself, click on \"Generate cluster plots\". Below the PCA factor scores plot,
