@@ -75,6 +75,7 @@ ui <- navbarPage(
                                                           5),
                                            inline = TRUE
                                            ),
+                        checkboxInput("sand_fi_means", "Plot means?", value = TRUE),
                         p("How do you want to generate the clusters?"),
                         radioGroupButtons(inputId = "clus_method",
                                           label = NULL,
@@ -242,26 +243,39 @@ server <- function(input, output) {
     })
     
     output$pca_map <- renderPlotly({
+        # fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
+        # axis1 = 1
+        # axis2 = 2 #could make reactive in future
+        # pca_df <- data.frame(fi1 = fi[,axis1], fi2 = fi[,axis2], 
+        #                      cluster = factor(sand_clus()$clus.grpR[rownames(fi)]))
+        # #colnames(pca_df) <- paste("Component", c(axis1, axis2))
+        # #color_rows <- sand_clus_colors()[sand_clus()$clus.grpR]
+        # 
+        # 
+        # plot_ly(pca_df, x = ~fi1, y = ~fi2, type = "scatter",
+        #         mode = "markers", text = ~rownames(fi),
+        #         hoverinfo = 'text', color = ~cluster,
+        #         colors = as.vector(sand_clus_colors())
+        # ) %>% 
+        #     layout(
+        #     plot_bgcolor = "#ebebeb",
+        #     paper_bgcolor = "#ebebeb",
+        #     xaxis = list(title = list(text = paste("Component", axis1))),
+        #     yaxis = list(title = list(text = paste("Component", axis2)))
+        #     )
+      
         fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
-        axis1 = 1
-        axis2 = 2 #could make reactive in future
-        pca_df <- data.frame(fi1 = fi[,axis1], fi2 = fi[,axis2], 
-                             cluster = factor(sand_clus()$clus.grpR[rownames(fi)]))
-        #colnames(pca_df) <- paste("Component", c(axis1, axis2))
-        #color_rows <- sand_clus_colors()[sand_clus()$clus.grpR]
-
-        
-        plot_ly(pca_df, x = ~fi1, y = ~fi2, type = "scatter",
-                mode = "markers", text = ~rownames(fi),
-                hoverinfo = 'text', color = ~cluster,
-                colors = as.vector(sand_clus_colors())
-        ) %>% 
-            layout(
-            plot_bgcolor = "#ebebeb",
-            paper_bgcolor = "#ebebeb",
-            xaxis = list(title = list(text = paste("Component", axis1))),
-            yaxis = list(title = list(text = paste("Component", axis2)))
-            )
+        axis1 <- 1
+        axis2 <- 2 #could make reactive in future
+        gc <- as.matrix(sand_clus_colors())
+        rownames(gc) <- 1:length(gc)
+        gc.vec <- as.vector(gc)
+        names(gc.vec) <- rownames(gc)
+        fi_plotly(fi[,c(axis1, axis2)],
+                  occu_clust_list = factor(sand_clus()$clus.grpR[rownames(fi)]),
+                  occu_clust_col = list(gc = gc, gc.vec = gc.vec),
+                  plot_means = input$sand_fi_means
+                  )
         
     })
     
