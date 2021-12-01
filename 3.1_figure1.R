@@ -168,7 +168,7 @@ get.dend.c_all <- fviz_dend(fit.c_all, k = 9,show_labels = FALSE,
                             rect_border = order.gc_all,
                             label_cols = order.oc_all,
                             cex = 1, #xlab = 'Job Traits',
-                            main = 'Occupational trait clusters',
+                            main = 'Trait clusters',
                             ylab = "Squared Ward Distance",
                             k_colors = "black") +
   geom_text(data = seg.c_all, inherit.aes = FALSE, angle = 90,
@@ -232,7 +232,7 @@ dend.c_jz123 <- get.dend.c_jz123 +
 dend.c_jz123
 
 # ---- merge.plots ----
-png(filename =  "Figure1-fix-CWgradient_202109.png", width = 90, height = 80, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure1-fix-CWgradient_202111.png", width = 90, height = 80, units = "cm", bg = "white",res = 300)
 ggarrange(scree_all, dend.r_all, dend.c_all,
           scree_45, dend.r_jz45, dend.c_jz45,
           scree_123, dend.r_jz123, dend.c_jz123,
