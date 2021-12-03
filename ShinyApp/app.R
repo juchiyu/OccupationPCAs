@@ -55,7 +55,11 @@ ui <- navbarPage(
                         ),
                  column(1),
                  column(8,
-                        plotlyOutput("fi_plot", height = "600px" )
+                        h2("Occupations Factor Scores"),
+                        plotlyOutput("fi_plot", height = "600px"),
+                        br(),
+                        h2("Job Traits Factor Scores"),
+                        plotlyOutput("fj_plot", height = "600px")
                         ),
                  column(1)
              )
@@ -143,11 +147,25 @@ server <- function(input, output) {
                "45" = occu.clust$jz45)
     })
     
+    trt_clust <- reactive({
+        switch(input$pca,
+               "all" = trt.clust$all,
+               "123" = trt.clust$jz123,
+               "45" = trt.clust$jz45)
+    })
+    
     output$fi_plot <- renderPlotly({
         fi_plotly(pca_res()$fi[,1:2], 
                   occu_clust()$list, 
                   occu_clust()$col, 
                   input$fi_means)
+    })
+    
+    output$fj_plot <- renderPlotly({
+      fi_plotly(pca_res()$fj[,1:2], 
+                trt_clust()$list, 
+                trt_clust()$col, 
+                input$fi_means)
     })
     
     
