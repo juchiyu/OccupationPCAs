@@ -118,9 +118,21 @@ ui <- navbarPage(
              ),
              hr(),
              fluidRow(
-                 column(12,
-                        plotlyOutput("pca_map", height = 600, width = 1200)
-                 )
+                 column(2),
+                 column(8,
+                        h2("Occupations Factor Scores"),
+                        plotlyOutput("sand_fi_plot", height = 600)
+                 ),
+                 column(2)
+             ),
+             hr(),
+             fluidRow(
+               column(2),
+               column(8,
+                      h2("Job Traits Factor Scores"),
+                      plotlyOutput("sand_fj_plot", height = 600)
+               ),
+               column(2)
              ),
              hr(),
              fluidRow(
@@ -260,28 +272,7 @@ server <- function(input, output) {
         prettyGraphsColorSelection(input$sandNumClus, starting.color = 8)
     })
     
-    output$pca_map <- renderPlotly({
-        # fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
-        # axis1 = 1
-        # axis2 = 2 #could make reactive in future
-        # pca_df <- data.frame(fi1 = fi[,axis1], fi2 = fi[,axis2], 
-        #                      cluster = factor(sand_clus()$clus.grpR[rownames(fi)]))
-        # #colnames(pca_df) <- paste("Component", c(axis1, axis2))
-        # #color_rows <- sand_clus_colors()[sand_clus()$clus.grpR]
-        # 
-        # 
-        # plot_ly(pca_df, x = ~fi1, y = ~fi2, type = "scatter",
-        #         mode = "markers", text = ~rownames(fi),
-        #         hoverinfo = 'text', color = ~cluster,
-        #         colors = as.vector(sand_clus_colors())
-        # ) %>% 
-        #     layout(
-        #     plot_bgcolor = "#ebebeb",
-        #     paper_bgcolor = "#ebebeb",
-        #     xaxis = list(title = list(text = paste("Component", axis1))),
-        #     yaxis = list(title = list(text = paste("Component", axis2)))
-        #     )
-      
+    output$sand_fi_plot <- renderPlotly({
         fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
         axis1 <- 1
         axis2 <- 2 #could make reactive in future
@@ -295,6 +286,19 @@ server <- function(input, output) {
                   plot_means = input$sand_fi_means
                   )
         
+    })
+    
+    output$sand_fj_plot <- renderPlotly({
+      fj <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fj
+      axis1 <- 1
+      axis2 <- 2 #could make reactive in future
+      fi_plotly(fj[,c(axis1, axis2)],
+                occu_clust_list = NULL,
+                occu_clust_col = NULL,
+                plot_means = FALSE,
+                clustering = FALSE
+      )
+      
     })
     
     
