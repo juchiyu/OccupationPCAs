@@ -69,6 +69,7 @@ ui <- navbarPage(
              shinyFeedback::useShinyFeedback(),
              fluidRow(
                  column(4,
+                        h4("Options"),
                         p("Which Job Zones?"),
                         checkboxGroupInput("whichJobZones",
                                            label = NULL,
@@ -80,32 +81,47 @@ ui <- navbarPage(
                                            inline = TRUE
                                            ),
                         checkboxInput("sand_fi_means", "Plot means?", value = TRUE),
-                        p("How do you want to generate the clusters?"),
-                        radioGroupButtons(inputId = "clus_method",
-                                          label = NULL,
-                                          choices = c("Hierarchical", "K-means"),
-                                          selected = "Hierarchical",
-                                          status = "success"),
                         p("Optionally, set a seed for reproducible K-means"),
                         numericInput("seed", 
                                      label = NULL,
                                      value = NULL,
                                      width = "25%"),
-                        actionButton("runPCA", "Run PCA and clustering!", width = '100%')
-                 ),
-                 column(4,
-                        sliderInput(inputId = "sandNumClus",
-                                    label = "Number of clusters (K):",
-                                    min = 6, max = 30, step = 1, value = 10),
-                        actionButton("sand_genmaps", "Generate cluster plots", width = '100%'),
+                        actionButton("runPCA", "Run PCA and clustering!", width = '100%'),
                         hr(),
                         downloadButton("sand_downloadData", "Download Clusters", style = "width:100%"),
                         hr(),
                         actionButton("sand_showhelp", "Help", 
                                      icon = icon("question-circle")
-                                    )
-                        ),
-                column(4
+                        )
+                 ),
+                 column(4,
+                        h4("Occupation Cluster Options"),
+                        sliderInput(inputId = "occu_sand_num_clus",
+                                    label = "Number of clusters (K):",
+                                    min = 6, max = 30, step = 1, value = 10),
+                        p("How do you want to generate the clusters?"),
+                        radioGroupButtons(inputId = "occu_clus_method",
+                                          label = NULL,
+                                          choices = c("Hierarchical", "K-means"),
+                                          selected = "Hierarchical",
+                                          status = "success"),
+                        actionButton("sand_genmaps", 
+                                     "Generate occupation cluster plots", width = '100%'),
+                        hr(),
+                        tableOutput("sand_occu_clus_table")
+                 ), 
+                column(4,
+                       h4("Job Trait Cluster Options"),
+                       sliderInput(inputId = "trt_sand_num_clus",
+                                   label = "Number of clusters (K):",
+                                   min = 6, max = 30, step = 1, value = 10),
+                       p("How do you want to generate the clusters?"),
+                       radioGroupButtons(inputId = "trt_clus_method",
+                                         label = NULL,
+                                         choices = c("Hierarchical", "K-means"),
+                                         selected = "Hierarchical",
+                                         status = "success"),
+                       tableOutput("sand_trt_clus_table")
                   
                 )        
                         
@@ -113,7 +129,7 @@ ui <- navbarPage(
              ),
              fluidRow(
                column(12,
-                      tableOutput("sand_clus_table")
+                      
                       )
              ),
              hr(),
@@ -136,9 +152,11 @@ ui <- navbarPage(
              ),
              hr(),
              fluidRow(
-                 column(12,
+                 column(2),
+                 column(8,
                         uiOutput("sandplots")
-                 )
+                 ),
+                 column(2)
              )
     )
 )
@@ -241,47 +259,78 @@ server <- function(input, output) {
         return(func_res)
     })
     
-    sand_clus <- reactive({
+    sand_occu_clus <- reactive({
         req(sand_res())
-        if(input$clus_method == "Hierarchical"){
+        if(input$occu_clus_method == "Hierarchical"){
           fit.r <- hclust(sand_res()$row.dist, method = "ward.D2")
           clus.grpR <- matrix(NA, nrow = length(fit.r$labels), ncol = 1, 
                               dimnames = list(c(fit.r$labels[fit.r$order]), paste0()))
-          get.clus <- as.matrix(cutree(fit.r, k = input$sandNumClus))
+          get.clus <- as.matrix(cutree(fit.r, k = input$occu_sand_num_clus))
           clus.grpR <- get.clus[rownames(clus.grpR),]
           clus.count <- table(clus.grpR)
         }
-        else if(input$clus_method == "K-means"){
+        else if(input$occu_clus_method == "K-means"){
           if(is.numeric(input$seed)){
             set.seed(input$seed)
           }
-          reskmeans <- kmeans(sand_res()$row.dist, input$sandNumClus)
+          reskmeans <- kmeans(sand_res()$row.dist, input$occu_sand_num_clus)
           clus.grpR <- reskmeans$cluster
           clus.count <- reskmeans$size
         }
         return(list(clus.grpR = clus.grpR, clus.count = clus.count))
     })
     
-    output$sand_clus_table <- renderTable({
-        table <- sand_clus()$clus.count %>% matrix(nrow = 1) %>% data.frame
+    sand_trt_clus <- reactive({
+      req(sand_res())
+      if(input$trt_clus_method == "Hierarchical"){
+        fit.r <- hclust(sand_res()$col.dist, method = "ward.D2")
+        clus.grpR <- matrix(NA, nrow = length(fit.r$labels), ncol = 1, 
+                            dimnames = list(c(fit.r$labels[fit.r$order]), paste0()))
+        get.clus <- as.matrix(cutree(fit.r, k = input$trt_sand_num_clus))
+        clus.grpR <- get.clus[rownames(clus.grpR),]
+        clus.count <- table(clus.grpR)
+      }
+      else if(input$trt_clus_method == "K-means"){
+        if(is.numeric(input$seed)){
+          set.seed(input$seed)
+        }
+        reskmeans <- kmeans(sand_res()$col.dist, input$trt_sand_num_clus)
+        clus.grpR <- reskmeans$cluster
+        clus.count <- reskmeans$size
+      }
+      return(list(clus.grpR = clus.grpR, clus.count = clus.count))
+    })
+    
+    output$sand_occu_clus_table <- renderTable({
+        table <- sand_occu_clus()$clus.count %>% matrix(nrow = 1) %>% data.frame
         colnames(table) <- paste0("C", 1:NCOL(table))
         return(table)
     })
     
-    sand_clus_colors <- reactive({
-        prettyGraphsColorSelection(input$sandNumClus, starting.color = 8)
+    output$sand_trt_clus_table <- renderTable({
+      table <- sand_trt_clus()$clus.count %>% matrix(nrow = 1) %>% data.frame
+      colnames(table) <- paste0("C", 1:NCOL(table))
+      return(table)
+    })
+    
+    sand_occu_clus_colors <- reactive({
+        prettyGraphsColorSelection(input$occu_sand_num_clus, starting.color = 8)
+    })
+    
+    sand_trt_clus_colors <- reactive({
+      prettyGraphsColorSelection(input$trt_sand_num_clus, starting.color = 69)
     })
     
     output$sand_fi_plot <- renderPlotly({
         fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
         axis1 <- 1
         axis2 <- 2 #could make reactive in future
-        gc <- as.matrix(sand_clus_colors())
+        gc <- as.matrix(sand_occu_clus_colors())
         rownames(gc) <- 1:length(gc)
         gc.vec <- as.vector(gc)
         names(gc.vec) <- rownames(gc)
         fi_plotly(fi[,c(axis1, axis2)],
-                  occu_clust_list = factor(sand_clus()$clus.grpR[rownames(fi)]),
+                  occu_clust_list = factor(sand_occu_clus()$clus.grpR[rownames(fi)]),
                   occu_clust_col = list(gc = gc, gc.vec = gc.vec),
                   plot_means = input$sand_fi_means
                   )
@@ -292,11 +341,14 @@ server <- function(input, output) {
       fj <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fj
       axis1 <- 1
       axis2 <- 2 #could make reactive in future
+      gc <- as.matrix(sand_trt_clus_colors())
+      rownames(gc) <- 1:length(gc)
+      gc.vec <- as.vector(gc)
+      names(gc.vec) <- rownames(gc)
       fi_plotly(fj[,c(axis1, axis2)],
-                occu_clust_list = NULL,
-                occu_clust_col = NULL,
-                plot_means = FALSE,
-                clustering = FALSE
+                occu_clust_list = factor(sand_trt_clus()$clus.grpR[rownames(fj)]),
+                occu_clust_col = list(gc = gc, gc.vec = gc.vec),
+                plot_means = input$sand_fi_means
       )
       
     })
@@ -306,8 +358,8 @@ server <- function(input, output) {
         notif <- showNotification("Generating cluster maps...", duration = 3, 
                                   closeButton = TRUE)
         
-        lapply(1:input$sandNumClus, function(x){
-            dat.clus <- subset(sand_clus()$clus.grpR, sand_clus()$clus.grpR == x)
+        lapply(1:input$occu_sand_num_clus, function(x){
+            dat.clus <- subset(sand_occu_clus()$clus.grpR, sand_occu_clus()$clus.grpR == x)
             dis.mat.sub <- as.matrix(sand_res()$row.dist)[names(dat.clus),names(dat.clus)]
             resMDS <- epMDS(DATA = dis.mat.sub, 
                             DATA_is_dist = TRUE,
@@ -320,7 +372,7 @@ server <- function(input, output) {
             output[[paste0("sandplot", x)]] <- renderPlotly({
                 plot_ly(x = fi[,1], y = fi[,2], type = "scatter",
                         mode = "markers", text = ~rownames(fi),
-                        hoverinfo = 'text', color = I(sand_clus_colors()[x]),
+                        hoverinfo = 'text', color = I(sand_occu_clus_colors()[x]),
                         stroke = I("black"), size = ~ 1/(dist_to_center^4), #to 4th power to increase differences in marker size
                         sizes = c(10, 200), fill = '' #avoids spurious error about line.width
                 ) %>% 
@@ -333,9 +385,9 @@ server <- function(input, output) {
             })
             
         })
-        plot_output_list <- lapply(1:input$sandNumClus, function(x){
+        plot_output_list <- lapply(1:input$occu_sand_num_clus, function(x){
             plot.name <- paste0("sandplot", x)
-            plotlyOutput(plot.name, height = 600, width = 1200)
+            plotlyOutput(plot.name, height = 600)
         })
         
         do.call(tagList, plot_output_list)
@@ -350,7 +402,7 @@ server <- function(input, output) {
     output$sand_downloadData <- downloadHandler(
       filename = "ONETclusters.csv",
       content = function(file) {
-        out_df <- data.frame(Occupation = sand_res()$data[,2], Cluster = sand_clus()$clus.grpR)
+        out_df <- data.frame(Occupation = sand_res()$data[,2], Cluster = sand_occu_clus()$clus.grpR)
         write.csv(out_df, file, row.names = FALSE)
       }
     )
