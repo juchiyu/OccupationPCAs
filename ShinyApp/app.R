@@ -227,13 +227,13 @@ server <- function(input, output) {
           p("The current page (The Paper) contains interactive results from our
             upcoming paper about using PCA and hierarchical clustering on these data.
             See the next page (The Sandbox) to run your own PCA and clustering."),
-          p("On the right are the first two dimensions of PCA factor scores for the occupations.
+          p("On the right are the first two dimensions of PCA factor scores for the occupations,
+            followed by the factor scores for the job traits.
             They are colored by their clusters from the hierarchical clustering.
             Cluster barycenters (group means) and names are displayed. Hover your mouse over
             the points to see the name of the occupation."),
-          p("On the left, you can select which job zones to include,
-            whether or not to plot cluster means, and the color scheme for the 
-            plot."),
+          p("On the left, you can select which job zones to include, and
+            whether or not to plot cluster means."),
           p("Clicking the Download Clusters button will save a .csv of the 
             occupations and which cluster they belong to.")
                   )
@@ -418,15 +418,19 @@ server <- function(input, output) {
           \"levels of education, experience, and training necessary to perform the occupation.\"
           "),
         p("The current page (The Sandbox) lets you run your own PCA and clustering.
-          Select which job zones to include, and which type of clustering to perform.
+          Select which job zones to include, and which type of clustering to perform for occupations
+          and traits.
           Optionally, you can set an integer seed so that your K-Means clusters are reproducible.
           Then hit \"Run PCA and clustering!\" It may take a
-          moment to run the analysis. Once it has finished, you can drag the \"Number of clusters (K)\"
-          slider to select how many clusters you would like to keep. The sizes of the clusters are displayed
-          in a table, and a PCA factor scores plot colored by cluster is displayed below.",
+          moment to run the analysis.
+          The clustering uses the components that are significant based on a permutation test of the eigenvalues.
+          Once clustering has finished, you can drag the \"Number of clusters (K)\"
+          sliders to select how many clusters you would like to keep for the occupations and traits.
+          The sizes of the clusters are displayed
+          in tables, and PCA factor scores plots colored by cluster are displayed below.",
           span("Note: if you change your job zones selection, you must re-click the \"Run PCA and clustering!\" button.",
                style = "font-style:italic")),
-        p("To look at each cluster by itself, click on \"Generate cluster plots\". Below the PCA factor scores plot,
+        p("To look at each occupation cluster by itself, click on \"Generate occupation cluster plots\". Below the PCA factor scores plots,
           an MDS factor scores plot will be displayed for each cluster. These MDS plots show how occupations within a
           cluster are related to each other. Occupations closer to the center of the plot are more prototypical for
           the cluster, and are displayed as larger dots. The title of each plot are the three most prototypical
