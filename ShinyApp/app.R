@@ -211,8 +211,11 @@ server <- function(input, output) {
     output$downloadData <- downloadHandler(
         filename = "ONETclusters.csv",
         content = function(file) {
-            out_df <- data.frame(Occupation = rownames(occu_clust()$list), Cluster = occu_clust()$list)
-            write.csv(out_df, file, row.names = FALSE)
+            out_df <- data.frame(Occupation = rownames(occu_clust()$list), 
+                                 `Occupation_Cluster` = occu_clust()$list,
+                                 `Job_Trait` = c(rownames(trt_clust()$list), rep(NA, length(occu_clust()$list)-120)),
+                                 `Trait_Cluster` = c(trt_clust()$list, rep(NA, length(occu_clust()$list)-120)))
+            write.csv(out_df, file, row.names = FALSE, na = "")
         }
     )
     
@@ -318,7 +321,7 @@ server <- function(input, output) {
     })
     
     sand_trt_clus_colors <- reactive({
-      prettyGraphsColorSelection(input$trt_sand_num_clus, starting.color = 69)
+      prettyGraphsColorSelection(input$trt_sand_num_clus, starting.color = 46)
     })
     
     output$sand_fi_plot <- renderPlotly({
@@ -402,8 +405,27 @@ server <- function(input, output) {
     output$sand_downloadData <- downloadHandler(
       filename = "ONETclusters.csv",
       content = function(file) {
-        out_df <- data.frame(Occupation = sand_res()$data[,2], Cluster = sand_occu_clus()$clus.grpR)
-        write.csv(out_df, file, row.names = FALSE)
+        # Output depends on lengths of the vectors, since all vecs must be same length
+        if(length(sand_occu_clus()$clus.grpR) > length(sand_trt_clus()$clus.grpR)){
+          out_df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
+                               Occupation_Cluster = sand_occu_clus()$clus.grpR,
+                               Job_Trait = c(names(sand_trt_clus()$clus.grpR), rep(NA, length(sand_occu_clus()$clus.grpR)-120)), 
+                               Trait_Cluster = c(sand_trt_clus()$clus.grpR, rep(NA, length(sand_occu_clus()$clus.grpR)-120)))
+        }
+        else if(length(sand_occu_clus()$clus.grpR) < length(sand_trt_clus()$clus.grpR)){
+          out_df <- data.frame(Occupation = c(names(sand_occu_clus()$clus.grpR), rep(NA, 120 - length(sand_occu_clus()$clus.grpR))), 
+                               Occupation_Cluster = c(sand_occu_clus()$clus.grpR, rep(NA, 120 - length(sand_occu_clus()$clus.grpR))),
+                               Job_Trait = names(sand_trt_clus()$clus.grpR), 
+                               Trait_Cluster = sand_trt_clus()$clus.grpR)
+        }
+        else{
+          out_df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
+                               Occupation_Cluster = sand_occu_clus()$clus.grpR,
+                               Job_Trait = names(sand_trt_clus()$clus.grpR), 
+                               Trait_Cluster = sand_trt_clus()$clus.grpR)
+          
+        }
+        write.csv(out_df, file, row.names = FALSE, na = "")
       }
     )
     
