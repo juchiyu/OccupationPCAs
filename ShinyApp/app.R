@@ -121,6 +121,9 @@ ui <- navbarPage(
                                          choices = c("Hierarchical", "K-means"),
                                          selected = "Hierarchical",
                                          status = "success"),
+                       actionButton("sand_genmaps_trt", 
+                                    "Generate trait cluster plots", width = '100%'),
+                       hr(),
                        tableOutput("sand_trt_clus_table")
                   
                 )        
@@ -154,10 +157,22 @@ ui <- navbarPage(
              fluidRow(
                  column(2),
                  column(8,
+                        h2("Occupations MDS Cluster Plots"),
                         uiOutput("sandplots")
                  ),
                  column(2)
+             ),
+             hr(),
+             fluidRow(
+               column(2),
+               column(8,
+                      h2("Job Traits MDS Cluster Plots"),
+                      uiOutput("sandplots_trt")
+               ),
+               column(2)
              )
+             
+             
     )
 )
     
@@ -358,7 +373,7 @@ server <- function(input, output) {
     
     
     sand_plots_reactive <- eventReactive(input$sand_genmaps, {
-        notif <- showNotification("Generating cluster maps...", duration = 3, 
+        notif <- showNotification("Generating occupation cluster maps...", duration = 3, 
                                   closeButton = TRUE)
         
         lapply(1:input$occu_sand_num_clus, function(x){
@@ -400,6 +415,52 @@ server <- function(input, output) {
     output$sandplots <- renderUI({
         sand_plots_reactive()
         
+    })
+    
+    
+    sand_plots_reactive_trt <- eventReactive(input$sand_genmaps_trt, {
+      notif <- showNotification("Generating trait cluster maps...", duration = 3, 
+                                closeButton = TRUE)
+      
+      lapply(1:input$trt_sand_num_clus, function(x){
+        dat.clus <- subset(sand_trt_clus()$clus.grpR, sand_trt_clus()$clus.grpR == x)
+        dis.mat.sub <- as.matrix(sand_res()$col.dist)[names(dat.clus),names(dat.clus)]
+        resMDS <- epMDS(DATA = dis.mat.sub, 
+                        DATA_is_dist = TRUE,
+                        method = "euclidean",
+                        graphs = FALSE)
+        fi <- resMDS$ExPosition.Data$fi
+        dist_to_center <- sqrt(rowSums(fi^2))
+        close_names <- str_trunc(names(sort(dist_to_center)[1:3]), 50, "right")
+        my_title <- paste(close_names, collapse = "; ")
+        output[[paste0("sandplot_trt", x)]] <- renderPlotly({
+          plot_ly(x = fi[,1], y = fi[,2], type = "scatter",
+                  mode = "markers", text = ~rownames(fi),
+                  hoverinfo = 'text', color = I(sand_trt_clus_colors()[x]),
+                  stroke = I("black"), size = ~ 1/(dist_to_center^4), #to 4th power to increase differences in marker size
+                  sizes = c(10, 200), fill = '' #avoids spurious error about line.width
+          ) %>% 
+            layout(title = list(text = my_title,
+                                font = list(size = 12)
+            ),
+            plot_bgcolor = "#ebebeb",
+            paper_bgcolor = "#ebebeb"
+            )
+        })
+        
+      })
+      plot_output_list <- lapply(1:input$trt_sand_num_clus, function(x){
+        plot.name <- paste0("sandplot_trt", x)
+        plotlyOutput(plot.name, height = 600)
+      })
+      
+      do.call(tagList, plot_output_list)
+      
+    })
+    
+    output$sandplots_trt <- renderUI({
+      sand_plots_reactive_trt()
+      
     })
     
     output$sand_downloadData <- downloadHandler(
@@ -452,11 +513,12 @@ server <- function(input, output) {
           in tables, and PCA factor scores plots colored by cluster are displayed below.",
           span("Note: if you change your job zones selection, you must re-click the \"Run PCA and clustering!\" button.",
                style = "font-style:italic")),
-        p("To look at each occupation cluster by itself, click on \"Generate occupation cluster plots\". Below the PCA factor scores plots,
-          an MDS factor scores plot will be displayed for each cluster. These MDS plots show how occupations within a
-          cluster are related to each other. Occupations closer to the center of the plot are more prototypical for
+        p("To look at each occupation or job trait cluster by itself, click on the \"Generate cluster plots\" buttons. 
+          Below the PCA factor scores plots,
+          an MDS factor scores plot will be displayed for each cluster. These MDS plots show how occupations or traits within a
+          cluster are related to each other. The items closer to the center of the plot are more prototypical for
           the cluster, and are displayed as larger dots. The title of each plot are the three most prototypical
-          occupations.")
+          items.")
         
       )
       )
