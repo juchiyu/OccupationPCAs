@@ -212,19 +212,19 @@ fiplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fi, design = occu.clust$jz123$
 # ---- fj.plots ----
 fj.point.size = 8; fj.text.size = 10
 
-fjplt_all <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Occupational trait clusters", print.list = TRUE, list.title = "traits", 
+fjplt_all <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
                          str4wrap = 30, list.ybase = 24, list.scale.y.ony = c(0.15,0,-0.15), list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.05, list.size = 12)  %>%
   arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
-fjplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Occupational trait clusters", print.list = TRUE, list.title = "traits", 
+fjplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
                             str4wrap = 30, list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.03, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12) %>%
   arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
-fjplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list, trt.clust$jz45$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Occupational trait clusters", print.list = TRUE, list.title = "traits", 
+fjplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list, trt.clust$jz45$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
                           list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.ony = c(0.15,0,-0.15), list.scale.ymin = 0.04, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.size = 12) %>%
   arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 # fjplt_jz45_23 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list, trt.clust$jz45$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title = "Job trait clusters")
 
-fjplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$list, trt.clust$jz123$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Occupational trait clusters", print.list = TRUE, list.title = "traits", 
+fjplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$list, trt.clust$jz123$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
                            str4wrap = 25, list.ybase = 5, list.scale.ymin = 0.03, list.scale.y.ony = c(0.20,0,-0.20), list.scale.y.onx = c(0.1,0.17,0.24)+0.05, list.size = 12) %>%
   arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 # fjplt_jz123_23 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$list, trt.clust$jz123$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title = "Job trait clusters")
@@ -250,7 +250,7 @@ fjplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$l
 # dev.off()
 
 ### vertical
-png(filename =  "Figure2a-CW_202109.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure2a-CW_202111.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_all, fiplt_all, fjplt_all),
              widths = c(0.2, 1.5,0.2),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
@@ -264,7 +264,7 @@ grid.arrange(grobs = list(jbplt_all, fiplt_all, fjplt_all),
 dev.off()
 
 ## vertical
-png(filename =  "Figure2b-CW_202110.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure2b-CW_202111.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_all_23, fiplt_all_23, fjplt_all_23),
              widths = c(0.2, 1.5,0.2),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
@@ -292,7 +292,7 @@ dev.off()
 # dev.off()
 
 ### vertical
-png(filename =  "Figure3-CW_202110.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure3-CW_202111.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_jz45, fiplt_jz45, fjplt_jz45),
              widths = c(0.2, 1.5,0.2),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
@@ -319,7 +319,7 @@ dev.off()
 # dev.off()
 
 ### vertical
-png(filename =  "Figure4-CW_202110.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure4-CW_202111.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
 grid.arrange(grobs = list(jbplt_jz123, fiplt_jz123, fjplt_jz123),
              widths = c(0.3, 1.5,0.3),
              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
