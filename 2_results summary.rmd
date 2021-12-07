@@ -1,6 +1,6 @@
 ---
 title: "2_results summary"
-author: "Ju-Chi.Yu"
+author: ""
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
