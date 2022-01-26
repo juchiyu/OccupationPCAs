@@ -23,7 +23,7 @@ load("data/from2_Dat4Plot.rda")
 source("fi_plotly.R")
 
 ui <- navbarPage(
-    title = "ONET Occupation Clusters",
+    title = "Visualization of Latent Components Assessed in O*NET Occupations (VOLCANO)",
     theme = shinytheme("superhero"),
     
     tabPanel("The Paper",
@@ -51,7 +51,8 @@ ui <- navbarPage(
                         hr(style = "height:5px"),
                         actionButton("showhelp", "Help", 
                                      icon = icon("question-circle")
-                                    )
+                                    ),
+                        actionButton("license", "Credits")
                         ),
                  column(1),
                  column(8,
@@ -256,6 +257,32 @@ server <- function(input, output) {
             occupations and which cluster they belong to.")
                   )
           )
+    })
+    
+    observeEvent(input$license,{
+      showModal(modalDialog(
+        title = "Credits",
+        h4("Project authors"),
+        p("Ju-Chi Yu, H. Moriah Sokolowski, Kirthana Rao, Luke Moraglia, Soudeh Khoubrouy, Hervé Abdi, and Brian Levine"),
+        h4("Shiny App developers"),
+        p("Luke Moraglia and Ju-Chi Yu"),
+        h4("Source Code"),
+        p("Source code for the analyses, Shiny app, and information about this project can be found in our ",
+          a("GitHub repository", href = "https://github.com/juchiyu/OccupationPCAs"),
+          "."),
+        h4("License"),
+        HTML('<p style="text-align: center">
+        <a href="https://www.onetonline.org/">
+        <img src="https://www.onetcenter.org/image/link/onet-in-it.svg" style="width: 130px; height: 60px; border: none" alt="O*NET in-it">
+        </a></p>
+          <p>This page includes information from 
+        <a href="https://www.onetonline.org/">O*NET OnLine</a>
+        by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA). 
+        Used under the <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> license. 
+        O*NET&reg; is a trademark of USDOL/ETA. The authors have modified all or some of this information. 
+        USDOL/ETA has not approved, endorsed, or tested these modifications.</p>')
+      )
+      )
     })
     
     
