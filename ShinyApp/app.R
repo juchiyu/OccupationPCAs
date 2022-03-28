@@ -36,6 +36,10 @@ ui <- navbarPage(
                                                    "4 & 5 (Cognitive)" = "45"),
                                     width = '100%'
                                     ),
+                        numericInput("comp1", "Horizontal Axis Component", 1,
+                                     min = 1, max = 120, step = 1),
+                        numericInput("comp2", "Vertical Axis Component", 2,
+                                     min = 1, max = 120, step = 1),
                         checkboxInput("fi_means", "Plot means?", value = TRUE),
                         # Removing color choice as of 2021-10-28 until I can update the color vectors
                         # to reflect changes in group names
@@ -88,12 +92,8 @@ ui <- navbarPage(
                                      value = NULL,
                                      width = "25%"),
                         actionButton("runPCA", "Run PCA and clustering!", width = '100%'),
-                        hr(),
-                        downloadButton("sand_downloadData", "Download Clusters", style = "width:100%"),
-                        hr(),
-                        actionButton("sand_showhelp", "Help", 
-                                     icon = icon("question-circle")
-                        )
+                        hr()
+                        
                  ),
                  column(4,
                         h4("Occupation Cluster Options"),
@@ -127,14 +127,27 @@ ui <- navbarPage(
                        hr(),
                        tableOutput("sand_trt_clus_table")
                   
-                )        
+                      )        
                         
                  
              ),
              fluidRow(
-               column(12,
-                      
-                      )
+               column(3,
+                      numericInput("sand_comp1", "Horizontal Axis Component", 1,
+                                   min = 1, max = 120, step = 1)
+               ),
+               column(3,
+                      numericInput("sand_comp2", "Vertical Axis Component", 2,
+                                   min = 1, max = 120, step = 1)
+               ),
+               column(3,
+                      downloadButton("sand_downloadData", "Download Clusters", style = "width:100%")
+                      ),
+               column(3,
+                      actionButton("sand_showhelp", "Help", 
+                                   icon = icon("question-circle"))
+               )
+               
              ),
              hr(),
              fluidRow(
@@ -200,18 +213,28 @@ server <- function(input, output) {
                "45" = trt.clust$jz45)
     })
     
+    # Updates the component selectors to not exceed max number of components
+    observeEvent(input$pca,{
+         updateNumericInput(inputId = "comp1", value = 1, max = length(pca_res()$eigs))
+         updateNumericInput(inputId = "comp2", value = 2, max = length(pca_res()$eigs))
+                })
+    
     output$fi_plot <- renderPlotly({
-        fi_plotly(pca_res()$fi[,1:2], 
+        fi_plotly(pca_res()$fi, 
                   occu_clust()$list, 
                   occu_clust()$col, 
-                  input$fi_means)
+                  input$fi_means,
+                  axis1 = input$comp1,
+                  axis2 = input$comp2)
     })
     
     output$fj_plot <- renderPlotly({
-      fi_plotly(pca_res()$fj[,1:2], 
+      fi_plotly(pca_res()$fj, 
                 trt_clust()$list, 
                 trt_clust()$col, 
-                input$fi_means)
+                input$fi_means,
+                axis1 = input$comp1,
+                axis2 = input$comp2)
     })
     
     
@@ -304,6 +327,11 @@ server <- function(input, output) {
         return(func_res)
     })
     
+    observeEvent(sand_res(),{
+      updateNumericInput(inputId = "sand_comp1", value = 1, max = length(sand_res()$PCA$Fixed.Data$ExPosition.Data$eigs))
+      updateNumericInput(inputId = "sand_comp2", value = 2, max = length(sand_res()$PCA$Fixed.Data$ExPosition.Data$eigs))
+    })
+    
     sand_occu_clus <- reactive({
         req(sand_res())
         if(input$occu_clus_method == "Hierarchical"){
@@ -368,32 +396,32 @@ server <- function(input, output) {
     
     output$sand_fi_plot <- renderPlotly({
         fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
-        axis1 <- 1
-        axis2 <- 2 #could make reactive in future
         gc <- as.matrix(sand_occu_clus_colors())
         rownames(gc) <- 1:length(gc)
         gc.vec <- as.vector(gc)
         names(gc.vec) <- rownames(gc)
-        fi_plotly(fi[,c(axis1, axis2)],
+        fi_plotly(fi,
                   occu_clust_list = factor(sand_occu_clus()$clus.grpR[rownames(fi)]),
                   occu_clust_col = list(gc = gc, gc.vec = gc.vec),
-                  plot_means = input$sand_fi_means
+                  plot_means = input$sand_fi_means,
+                  axis1 = input$sand_comp1,
+                  axis2 = input$sand_comp2
                   )
         
     })
     
     output$sand_fj_plot <- renderPlotly({
       fj <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fj
-      axis1 <- 1
-      axis2 <- 2 #could make reactive in future
       gc <- as.matrix(sand_trt_clus_colors())
       rownames(gc) <- 1:length(gc)
       gc.vec <- as.vector(gc)
       names(gc.vec) <- rownames(gc)
-      fi_plotly(fj[,c(axis1, axis2)],
+      fi_plotly(fj,
                 occu_clust_list = factor(sand_trt_clus()$clus.grpR[rownames(fj)]),
                 occu_clust_col = list(gc = gc, gc.vec = gc.vec),
-                plot_means = input$sand_fi_means
+                plot_means = input$sand_fi_means,
+                axis1 = input$sand_comp1,
+                axis2 = input$sand_comp2
       )
       
     })
