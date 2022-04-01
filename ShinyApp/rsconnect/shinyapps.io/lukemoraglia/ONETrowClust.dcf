@@ -5,10 +5,10 @@ account: lukemoraglia
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4660562
-bundleId: 5511215
+bundleId: 5763379
 url: https://lukemoraglia.shinyapps.io/ONETrowClust/
-when: 1643217035.26079
-lastSyncTime: 1643217035.26079
+when: 1649089862.47019
+lastSyncTime: 1649089862.47019
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .RData

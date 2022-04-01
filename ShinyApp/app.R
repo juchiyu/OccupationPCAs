@@ -51,7 +51,7 @@ ui <- navbarPage(
                         #                            "By Clustering" = '1'),
                         #             width = '100%'
                         #             ),
-                        downloadButton("downloadData", "Download Clusters", style = "width:100%"),
+                        downloadButton("downloadData", "Download", style = "width:100%"),
                         hr(style = "height:5px"),
                         actionButton("showhelp", "Help", 
                                      icon = icon("question-circle")
@@ -248,15 +248,40 @@ server <- function(input, output) {
     
     
     output$downloadData <- downloadHandler(
-        filename = "ONETclusters.csv",
-        content = function(file) {
-            out_df <- data.frame(Occupation = rownames(occu_clust()$list), 
-                                 `Occupation_Cluster` = occu_clust()$list,
-                                 `Job_Trait` = c(rownames(trt_clust()$list), rep(NA, length(occu_clust()$list)-120)),
-                                 `Trait_Cluster` = c(trt_clust()$list, rep(NA, length(occu_clust()$list)-120)))
-            write.csv(out_df, file, row.names = FALSE, na = "")
+        filename = "VOLCANO.zip",
+        content = function(file){
+          #go to a temp dir to avoid permission issues
+          owd <- setwd(tempdir())
+          on.exit(setwd(owd))
+          files <- NULL;
+          
+          # Occupations first
+          file_name <- "Occupations.csv"
+          factor_scores <- pca_res()$fi[rownames(occu_clust()$list),]
+          colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+          df <- data.frame(Occupation = rownames(occu_clust()$list), 
+                           `Occupation_Cluster` = occu_clust()$list,
+                           factor_scores
+                           )
+          write.csv(df, file_name, row.names = FALSE, na = "")
+          
+          # Job Traits second
+          file_name <- "Job_traits.csv"
+          factor_scores <- pca_res()$fj[rownames(trt_clust()$list),]
+          colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+          df <- data.frame(Job_Trait = rownames(trt_clust()$list), 
+                           Trait_Cluster = trt_clust()$list,
+                           factor_scores
+          )
+          write.csv(df, file_name, row.names = FALSE, na = "")
+          
+          #create the zip file
+          zip(file,c("Occupations.csv", "Job_traits.csv"))
         }
     )
+    
+    
+    
     
     observeEvent(input$showhelp,{
         showModal(modalDialog(
@@ -269,15 +294,18 @@ server <- function(input, output) {
           p("The current page (The Paper) contains interactive results from our
             upcoming paper about using PCA and hierarchical clustering on these data.
             See the next page (The Sandbox) to run your own PCA and clustering."),
-          p("On the right are the first two dimensions of PCA factor scores for the occupations,
+          p("On the right are the PCA factor scores for the occupations,
             followed by the factor scores for the job traits.
             They are colored by their clusters from the hierarchical clustering.
             Cluster barycenters (group means) and names are displayed. Hover your mouse over
-            the points to see the name of the occupation."),
+            the points to see the name of the occupation.
+            "),
           p("On the left, you can select which job zones to include, and
-            whether or not to plot cluster means."),
-          p("Clicking the Download Clusters button will save a .csv of the 
-            occupations and which cluster they belong to.")
+            whether or not to plot cluster means.
+            You can change which components are plotted using the Horizontal and 
+            Vertical Axis Component selectors."),
+          p("Clicking the Download button will save a .zip with .csv files containing 
+            the occupations and job traits, their clusters, and their factor scores.")
                   )
           )
     })
@@ -519,33 +547,35 @@ server <- function(input, output) {
     })
     
     output$sand_downloadData <- downloadHandler(
-      filename = "ONETclusters.csv",
+      filename = "VOLCANO_sandbox.zip",
       content = function(file) {
-        # Output depends on lengths of the vectors, since all vecs must be same length
-        if(length(sand_occu_clus()$clus.grpR) > length(sand_trt_clus()$clus.grpR)){
-          out_df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
-                               Occupation_Cluster = sand_occu_clus()$clus.grpR,
-                               Job_Trait = c(names(sand_trt_clus()$clus.grpR), rep(NA, length(sand_occu_clus()$clus.grpR)-120)), 
-                               Trait_Cluster = c(sand_trt_clus()$clus.grpR, rep(NA, length(sand_occu_clus()$clus.grpR)-120)))
-        }
-        else if(length(sand_occu_clus()$clus.grpR) < length(sand_trt_clus()$clus.grpR)){
-          out_df <- data.frame(Occupation = c(names(sand_occu_clus()$clus.grpR), rep(NA, 120 - length(sand_occu_clus()$clus.grpR))), 
-                               Occupation_Cluster = c(sand_occu_clus()$clus.grpR, rep(NA, 120 - length(sand_occu_clus()$clus.grpR))),
-                               Job_Trait = names(sand_trt_clus()$clus.grpR), 
-                               Trait_Cluster = sand_trt_clus()$clus.grpR)
-        }
-        else{
-          out_df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
-                               Occupation_Cluster = sand_occu_clus()$clus.grpR,
-                               Job_Trait = names(sand_trt_clus()$clus.grpR), 
-                               Trait_Cluster = sand_trt_clus()$clus.grpR)
-          
-        }
-        write.csv(out_df, file, row.names = FALSE, na = "")
+        #go to a temp dir to avoid permission issues
+        owd <- setwd(tempdir())
+        on.exit(setwd(owd))
+        files <- NULL;
+        
+        # Occupations first
+        file_name <- "Occupations.csv"
+        factor_scores <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi[names(sand_occu_clus()$clus.grpR),]
+        colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+        df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
+                         Occupation_Cluster = sand_occu_clus()$clus.grpR,
+                         factor_scores)
+        write.csv(df, file_name, row.names = FALSE, na = "")
+        
+        # Job Traits second
+        file_name <- "Job_traits.csv"
+        factor_scores <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fj[names(sand_trt_clus()$clus.grpR),]
+        colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+        df <- data.frame(Job_Trait = names(sand_trt_clus()$clus.grpR),
+                         Trait_Cluster = sand_trt_clus()$clus.grpR,
+                         factor_scores)
+        write.csv(df, file_name, row.names = FALSE, na = "")
+        
+        #create the zip file
+        zip(file,c("Occupations.csv", "Job_traits.csv"))
       }
     )
-    
-    
     
     observeEvent(input$sand_showhelp,{
       showModal(modalDialog(
@@ -565,10 +595,11 @@ server <- function(input, output) {
           Once clustering has finished, you can drag the \"Number of clusters (K)\"
           sliders to select how many clusters you would like to keep for the occupations and traits.
           The sizes of the clusters are displayed
-          in tables, and PCA factor scores plots colored by cluster are displayed below.",
+          in tables, and PCA factor scores plots colored by cluster are displayed below.
+          You can change which components are plotted using the Horizontal and Vertical Axis Component selectors.",
           span("Note: if you change your job zones selection, you must re-click the \"Run PCA and clustering!\" button.",
                style = "font-style:italic")),
-        p("To look at each occupation or job trait cluster by itself, click on the \"Generate cluster plots\" buttons. 
+        p("To look at each occupation or job trait cluster by itself, click on the \"Generate occupation/trait cluster plots\" buttons. 
           Below the PCA factor scores plots,
           an MDS factor scores plot will be displayed for each cluster. These MDS plots show how occupations or traits within a
           cluster are related to each other. The items closer to the center of the plot are more prototypical for
