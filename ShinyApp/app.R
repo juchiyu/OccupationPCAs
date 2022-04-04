@@ -36,6 +36,10 @@ ui <- navbarPage(
                                                    "4 & 5 (Cognitive)" = "45"),
                                     width = '100%'
                                     ),
+                        numericInput("comp1", "Horizontal Axis Component", 1,
+                                     min = 1, max = 120, step = 1),
+                        numericInput("comp2", "Vertical Axis Component", 2,
+                                     min = 1, max = 120, step = 1),
                         checkboxInput("fi_means", "Plot means?", value = TRUE),
                         # Removing color choice as of 2021-10-28 until I can update the color vectors
                         # to reflect changes in group names
@@ -47,7 +51,7 @@ ui <- navbarPage(
                         #                            "By Clustering" = '1'),
                         #             width = '100%'
                         #             ),
-                        downloadButton("downloadData", "Download Clusters", style = "width:100%"),
+                        downloadButton("downloadData", "Download", style = "width:100%"),
                         hr(style = "height:5px"),
                         actionButton("showhelp", "Help", 
                                      icon = icon("question-circle")
@@ -88,12 +92,8 @@ ui <- navbarPage(
                                      value = NULL,
                                      width = "25%"),
                         actionButton("runPCA", "Run PCA and clustering!", width = '100%'),
-                        hr(),
-                        downloadButton("sand_downloadData", "Download Clusters", style = "width:100%"),
-                        hr(),
-                        actionButton("sand_showhelp", "Help", 
-                                     icon = icon("question-circle")
-                        )
+                        hr()
+                        
                  ),
                  column(4,
                         h4("Occupation Cluster Options"),
@@ -127,14 +127,27 @@ ui <- navbarPage(
                        hr(),
                        tableOutput("sand_trt_clus_table")
                   
-                )        
+                      )        
                         
                  
              ),
              fluidRow(
-               column(12,
-                      
-                      )
+               column(3,
+                      numericInput("sand_comp1", "Horizontal Axis Component", 1,
+                                   min = 1, max = 120, step = 1)
+               ),
+               column(3,
+                      numericInput("sand_comp2", "Vertical Axis Component", 2,
+                                   min = 1, max = 120, step = 1)
+               ),
+               column(3,
+                      downloadButton("sand_downloadData", "Download Clusters", style = "width:100%")
+                      ),
+               column(3,
+                      actionButton("sand_showhelp", "Help", 
+                                   icon = icon("question-circle"))
+               )
+               
              ),
              hr(),
              fluidRow(
@@ -200,18 +213,28 @@ server <- function(input, output) {
                "45" = trt.clust$jz45)
     })
     
+    # Updates the component selectors to not exceed max number of components
+    observeEvent(input$pca,{
+         updateNumericInput(inputId = "comp1", value = 1, max = length(pca_res()$eigs))
+         updateNumericInput(inputId = "comp2", value = 2, max = length(pca_res()$eigs))
+                })
+    
     output$fi_plot <- renderPlotly({
-        fi_plotly(pca_res()$fi[,1:2], 
+        fi_plotly(pca_res()$fi, 
                   occu_clust()$list, 
                   occu_clust()$col, 
-                  input$fi_means)
+                  input$fi_means,
+                  axis1 = input$comp1,
+                  axis2 = input$comp2)
     })
     
     output$fj_plot <- renderPlotly({
-      fi_plotly(pca_res()$fj[,1:2], 
+      fi_plotly(pca_res()$fj, 
                 trt_clust()$list, 
                 trt_clust()$col, 
-                input$fi_means)
+                input$fi_means,
+                axis1 = input$comp1,
+                axis2 = input$comp2)
     })
     
     
@@ -225,15 +248,40 @@ server <- function(input, output) {
     
     
     output$downloadData <- downloadHandler(
-        filename = "ONETclusters.csv",
-        content = function(file) {
-            out_df <- data.frame(Occupation = rownames(occu_clust()$list), 
-                                 `Occupation_Cluster` = occu_clust()$list,
-                                 `Job_Trait` = c(rownames(trt_clust()$list), rep(NA, length(occu_clust()$list)-120)),
-                                 `Trait_Cluster` = c(trt_clust()$list, rep(NA, length(occu_clust()$list)-120)))
-            write.csv(out_df, file, row.names = FALSE, na = "")
+        filename = "VOLCANO.zip",
+        content = function(file){
+          #go to a temp dir to avoid permission issues
+          owd <- setwd(tempdir())
+          on.exit(setwd(owd))
+          files <- NULL;
+          
+          # Occupations first
+          file_name <- "Occupations.csv"
+          factor_scores <- pca_res()$fi[rownames(occu_clust()$list),]
+          colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+          df <- data.frame(Occupation = rownames(occu_clust()$list), 
+                           `Occupation_Cluster` = occu_clust()$list,
+                           factor_scores
+                           )
+          write.csv(df, file_name, row.names = FALSE, na = "")
+          
+          # Job Traits second
+          file_name <- "Job_traits.csv"
+          factor_scores <- pca_res()$fj[rownames(trt_clust()$list),]
+          colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+          df <- data.frame(Job_Trait = rownames(trt_clust()$list), 
+                           Trait_Cluster = trt_clust()$list,
+                           factor_scores
+          )
+          write.csv(df, file_name, row.names = FALSE, na = "")
+          
+          #create the zip file
+          zip(file,c("Occupations.csv", "Job_traits.csv"))
         }
     )
+    
+    
+    
     
     observeEvent(input$showhelp,{
         showModal(modalDialog(
@@ -246,15 +294,18 @@ server <- function(input, output) {
           p("The current page (The Paper) contains interactive results from our
             upcoming paper about using PCA and hierarchical clustering on these data.
             See the next page (The Sandbox) to run your own PCA and clustering."),
-          p("On the right are the first two dimensions of PCA factor scores for the occupations,
+          p("On the right are the PCA factor scores for the occupations,
             followed by the factor scores for the job traits.
             They are colored by their clusters from the hierarchical clustering.
             Cluster barycenters (group means) and names are displayed. Hover your mouse over
-            the points to see the name of the occupation."),
+            the points to see the name of the occupation.
+            "),
           p("On the left, you can select which job zones to include, and
-            whether or not to plot cluster means."),
-          p("Clicking the Download Clusters button will save a .csv of the 
-            occupations and which cluster they belong to.")
+            whether or not to plot cluster means.
+            You can change which components are plotted using the Horizontal and 
+            Vertical Axis Component selectors."),
+          p("Clicking the Download button will save a .zip with .csv files containing 
+            the occupations and job traits, their clusters, and their factor scores.")
                   )
           )
     })
@@ -302,6 +353,11 @@ server <- function(input, output) {
         func_res <- PCAonJobZones(input$whichJobZones, onet_data)
         
         return(func_res)
+    })
+    
+    observeEvent(sand_res(),{
+      updateNumericInput(inputId = "sand_comp1", value = 1, max = length(sand_res()$PCA$Fixed.Data$ExPosition.Data$eigs))
+      updateNumericInput(inputId = "sand_comp2", value = 2, max = length(sand_res()$PCA$Fixed.Data$ExPosition.Data$eigs))
     })
     
     sand_occu_clus <- reactive({
@@ -368,32 +424,32 @@ server <- function(input, output) {
     
     output$sand_fi_plot <- renderPlotly({
         fi <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi
-        axis1 <- 1
-        axis2 <- 2 #could make reactive in future
         gc <- as.matrix(sand_occu_clus_colors())
         rownames(gc) <- 1:length(gc)
         gc.vec <- as.vector(gc)
         names(gc.vec) <- rownames(gc)
-        fi_plotly(fi[,c(axis1, axis2)],
+        fi_plotly(fi,
                   occu_clust_list = factor(sand_occu_clus()$clus.grpR[rownames(fi)]),
                   occu_clust_col = list(gc = gc, gc.vec = gc.vec),
-                  plot_means = input$sand_fi_means
+                  plot_means = input$sand_fi_means,
+                  axis1 = input$sand_comp1,
+                  axis2 = input$sand_comp2
                   )
         
     })
     
     output$sand_fj_plot <- renderPlotly({
       fj <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fj
-      axis1 <- 1
-      axis2 <- 2 #could make reactive in future
       gc <- as.matrix(sand_trt_clus_colors())
       rownames(gc) <- 1:length(gc)
       gc.vec <- as.vector(gc)
       names(gc.vec) <- rownames(gc)
-      fi_plotly(fj[,c(axis1, axis2)],
+      fi_plotly(fj,
                 occu_clust_list = factor(sand_trt_clus()$clus.grpR[rownames(fj)]),
                 occu_clust_col = list(gc = gc, gc.vec = gc.vec),
-                plot_means = input$sand_fi_means
+                plot_means = input$sand_fi_means,
+                axis1 = input$sand_comp1,
+                axis2 = input$sand_comp2
       )
       
     })
@@ -491,33 +547,35 @@ server <- function(input, output) {
     })
     
     output$sand_downloadData <- downloadHandler(
-      filename = "ONETclusters.csv",
+      filename = "VOLCANO_sandbox.zip",
       content = function(file) {
-        # Output depends on lengths of the vectors, since all vecs must be same length
-        if(length(sand_occu_clus()$clus.grpR) > length(sand_trt_clus()$clus.grpR)){
-          out_df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
-                               Occupation_Cluster = sand_occu_clus()$clus.grpR,
-                               Job_Trait = c(names(sand_trt_clus()$clus.grpR), rep(NA, length(sand_occu_clus()$clus.grpR)-120)), 
-                               Trait_Cluster = c(sand_trt_clus()$clus.grpR, rep(NA, length(sand_occu_clus()$clus.grpR)-120)))
-        }
-        else if(length(sand_occu_clus()$clus.grpR) < length(sand_trt_clus()$clus.grpR)){
-          out_df <- data.frame(Occupation = c(names(sand_occu_clus()$clus.grpR), rep(NA, 120 - length(sand_occu_clus()$clus.grpR))), 
-                               Occupation_Cluster = c(sand_occu_clus()$clus.grpR, rep(NA, 120 - length(sand_occu_clus()$clus.grpR))),
-                               Job_Trait = names(sand_trt_clus()$clus.grpR), 
-                               Trait_Cluster = sand_trt_clus()$clus.grpR)
-        }
-        else{
-          out_df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
-                               Occupation_Cluster = sand_occu_clus()$clus.grpR,
-                               Job_Trait = names(sand_trt_clus()$clus.grpR), 
-                               Trait_Cluster = sand_trt_clus()$clus.grpR)
-          
-        }
-        write.csv(out_df, file, row.names = FALSE, na = "")
+        #go to a temp dir to avoid permission issues
+        owd <- setwd(tempdir())
+        on.exit(setwd(owd))
+        files <- NULL;
+        
+        # Occupations first
+        file_name <- "Occupations.csv"
+        factor_scores <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fi[names(sand_occu_clus()$clus.grpR),]
+        colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+        df <- data.frame(Occupation = names(sand_occu_clus()$clus.grpR), 
+                         Occupation_Cluster = sand_occu_clus()$clus.grpR,
+                         factor_scores)
+        write.csv(df, file_name, row.names = FALSE, na = "")
+        
+        # Job Traits second
+        file_name <- "Job_traits.csv"
+        factor_scores <- sand_res()$PCA$Fixed.Data$ExPosition.Data$fj[names(sand_trt_clus()$clus.grpR),]
+        colnames(factor_scores) <- paste("Score_Comp_", 1:ncol(factor_scores))
+        df <- data.frame(Job_Trait = names(sand_trt_clus()$clus.grpR),
+                         Trait_Cluster = sand_trt_clus()$clus.grpR,
+                         factor_scores)
+        write.csv(df, file_name, row.names = FALSE, na = "")
+        
+        #create the zip file
+        zip(file,c("Occupations.csv", "Job_traits.csv"))
       }
     )
-    
-    
     
     observeEvent(input$sand_showhelp,{
       showModal(modalDialog(
@@ -537,10 +595,11 @@ server <- function(input, output) {
           Once clustering has finished, you can drag the \"Number of clusters (K)\"
           sliders to select how many clusters you would like to keep for the occupations and traits.
           The sizes of the clusters are displayed
-          in tables, and PCA factor scores plots colored by cluster are displayed below.",
+          in tables, and PCA factor scores plots colored by cluster are displayed below.
+          You can change which components are plotted using the Horizontal and Vertical Axis Component selectors.",
           span("Note: if you change your job zones selection, you must re-click the \"Run PCA and clustering!\" button.",
                style = "font-style:italic")),
-        p("To look at each occupation or job trait cluster by itself, click on the \"Generate cluster plots\" buttons. 
+        p("To look at each occupation or job trait cluster by itself, click on the \"Generate occupation/trait cluster plots\" buttons. 
           Below the PCA factor scores plots,
           an MDS factor scores plot will be displayed for each cluster. These MDS plots show how occupations or traits within a
           cluster are related to each other. The items closer to the center of the plot are more prototypical for

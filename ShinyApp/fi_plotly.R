@@ -1,21 +1,23 @@
 # Create plotly graph of fi points
 
-fi_plotly <- function(fi_to_plot, #matrix of n rows, 2 columns 
+fi_plotly <- function(fi_to_plot, #matrix of n rows 
                       occu_clust_list = NULL, #vector with n entries of cluster each belongs to
                       occu_clust_col = NULL, #list with gc and gc.vec
                       plot_means = TRUE,
-                      clustering = TRUE
+                      clustering = TRUE,
+                      axis1 = 1, #column to plot on horizontal
+                      axis2 = 2  #column to plot on vertical
 ){
   if(clustering){
     opac <- 0.5
     if(!plot_means){
       opac <- 1
     }
-    fi_all <- data.frame(fi_to_plot, cluster = occu_clust_list)
+    fi_all <- data.frame(fi_to_plot[,c(axis1, axis2)], cluster = occu_clust_list)
     gc.vec <- as.vector(occu_clust_col$gc)
     names(gc.vec) <- dimnames(occu_clust_col$gc)[[1]]
     
-    fi_all_means_mat <- PTCA4CATA::getMeans(fi_to_plot, occu_clust_list)
+    fi_all_means_mat <- PTCA4CATA::getMeans(fi_to_plot[,c(axis1, axis2)], occu_clust_list)
     fi_all_means <- data.frame(fi_all_means_mat, clust_name = rownames(fi_all_means_mat))
     
     p <- plot_ly(data = fi_all, x = ~X1, y = ~X2, type = "scatter",
@@ -26,8 +28,8 @@ fi_plotly <- function(fi_to_plot, #matrix of n rows, 2 columns
         plot_bgcolor = "#ebebeb",
         paper_bgcolor = "#ebebeb",
         legend = list(orientation = "h", y = -0.2),
-        xaxis = list(title = list(text = "Component 1")),
-        yaxis = list(title = list(text = "Component 2"))
+        xaxis = list(title = list(text = paste("Component", axis1))),
+        yaxis = list(title = list(text = paste("Component", axis2)))
                       
       )
     
