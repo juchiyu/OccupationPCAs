@@ -27,8 +27,9 @@ fi_plotly <- function(fi_to_plot, #matrix of n rows
       layout(
         plot_bgcolor = "#ebebeb",
         paper_bgcolor = "#ebebeb",
-        legend = list(orientation = "h", y = -0.2),
-        xaxis = list(title = list(text = paste("Component", axis1))),
+        legend = list(orientation = "v"),
+        xaxis = list(title = list(text = paste("Component", axis1)), 
+                     scaleanchor = "y", scaleratio = 1), #fixed ratio of the axes
         yaxis = list(title = list(text = paste("Component", axis2)))
                       
       )

@@ -52,6 +52,8 @@ ui <- navbarPage(
                         #             width = '100%'
                         #             ),
                         downloadButton("downloadData", "Download", style = "width:100%"),
+                        p("Download the results including factor scores and clusters", 
+                          style = "font-size:85%"), #smaller?
                         hr(style = "height:5px"),
                         actionButton("showhelp", "Help", 
                                      icon = icon("question-circle")
@@ -140,10 +142,12 @@ ui <- navbarPage(
                       numericInput("sand_comp2", "Vertical Axis Component", 2,
                                    min = 1, max = 120, step = 1)
                ),
-               column(3,
-                      downloadButton("sand_downloadData", "Download Clusters", style = "width:100%")
+               column(4,
+                      downloadButton("sand_downloadData", "Download", style = "width:75%"),
+                      p("Download the results including factor scores and clusters",
+                        style = "font-size:85%")
                       ),
-               column(3,
+               column(2,
                       actionButton("sand_showhelp", "Help", 
                                    icon = icon("question-circle"))
                )
@@ -478,10 +482,12 @@ server <- function(input, output) {
                         sizes = c(10, 200), fill = '' #avoids spurious error about line.width
                 ) %>% 
                     layout(title = list(text = my_title,
-                                        font = list(size = 12)
-                    ),
-                    plot_bgcolor = "#ebebeb",
-                    paper_bgcolor = "#ebebeb"
+                                        font = list(size = 12)),
+                            xaxis = list(title = list(text = "MDS Component 1"), 
+                                         scaleanchor = "y", scaleratio = 1), #fixed ratio of the axes
+                            yaxis = list(title = list(text = "MDS Component 2")),              
+                            plot_bgcolor = "#ebebeb",
+                            paper_bgcolor = "#ebebeb"
                     )
             })
             
