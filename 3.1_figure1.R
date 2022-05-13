@@ -232,7 +232,7 @@ dend.c_jz123 <- get.dend.c_jz123 +
 dend.c_jz123
 
 # ---- merge.plots ----
-png(filename =  "Figure1-fix-CWgradient_202111.png", width = 90, height = 80, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure1_202203.png", width = 90, height = 80, units = "cm", bg = "white",res = 300)
 ggarrange(scree_all, dend.r_all, dend.c_all,
           scree_45, dend.r_jz45, dend.c_jz45,
           scree_123, dend.r_jz123, dend.c_jz123,
