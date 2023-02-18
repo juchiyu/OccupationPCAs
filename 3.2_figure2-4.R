@@ -176,38 +176,38 @@ get.FacPlot <- function(eigres, pcares, design, col.list, xaxis = 1, yaxis = 2, 
   return(plot.res)
 }
 
-jbplt_all <- get.FacPlot(eigres_all, pcares_all$fi, design = onet.jz_all, jb.col_all, xaxis = 1, yaxis = 2, title = "Occupations by Job Zones") %>%
-  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
-jbplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fi, design = onet.jz_all, jb.col_all, xaxis = 1, yaxis = 3, title = "Occupations by Job Zones") %>%
-  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
-jbplt_all_34 <- get.FacPlot(eigres_all, pcares_all$fi, design = onet.jz_all, jb.col_all, xaxis = 3, yaxis = 4, title = "Occupations by Job Zones") %>%
-  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+jbplt_all <- get.FacPlot(eigres_all, pcares_all$fi, design = onet.jz_all, jb.col_all, xaxis = 1, yaxis = 2, title = "Occupations by Job Zones",cex.mean.text = 14, title.size = 60) %>%
+  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
+jbplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fi, design = onet.jz_all, jb.col_all, xaxis = 1, yaxis = 3, title = "Occupations by Job Zones",cex.mean.text = 14, title.size = 60) %>%
+  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
+jbplt_all_34 <- get.FacPlot(eigres_all, pcares_all$fi, design = onet.jz_all, jb.col_all, xaxis = 3, yaxis = 4, title = "Occupations by Job Zones",cex.mean.text = 14, title.size = 60) %>%
+  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 
-jbplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fi, design = onet.jz_45, jb.col_45, xaxis = 1, yaxis = 2, title = "Occupations by Job Zones") %>%
-  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+jbplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fi, design = onet.jz_45, jb.col_45, xaxis = 1, yaxis = 2, title = "Occupations by Job Zones",cex.mean.text = 14, title.size = 60) %>%
+  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 # jbplt_jz45_23 <- get.FacPlot(eigres_45, pcares_45$fi, design = onet.jz_45, jb.col_45, xaxis = 3, yaxis = 2, title = "Occupations by job zones")
 
-jbplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fi, design = onet.jz_123, jb.col_123, xaxis = 1, yaxis = 2, title = "Occupations by Job Zones") %>%
-  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+jbplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fi, design = onet.jz_123, jb.col_123, xaxis = 1, yaxis = 2, title = "Occupations by Job Zones",cex.mean.text = 14, title.size = 60) %>%
+  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 # jbplt_jz123_23 <- get.FacPlot(eigres_123, pcares_123$fi, design = onet.jz_123, jb.col_123, xaxis = 3, yaxis = 2, title = "Occupations by job zones")
 
 # ---- fi.plots ----
-fi.point.size = 6; fi.text.size = 8; title.size = 30
+fi.point.size = 8; fi.text.size = 11; title.size = 40
 
 fiplt_all <- get.FacPlot(eigres_all, pcares_all$fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 1, yaxis = 2,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE, 
-                         str4wrap = 30, list.xmin.scale = 0.2, list.scale.y.ony = c(0.2,0,-0.2), list.scale.y.onx = c(0.1,0.16,0.23)+0.05, list.scale.ymin = 0.02, list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
-fiplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 1, yaxis = 3,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE,
-                            str4wrap = 22, list.scale.y.ony = c(0.30,0,-0.30), list.scale.y.onx = c(0.1,0.16,0.22)+0.08, list.scale.ymin = 0.03, list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                         str4wrap = 30, list.xmin.scale = 0.2, list.scale.y.ony = c(0.2,0,-0.2), list.scale.y.onx = c(0.1,0.16,0.23)+0.05, list.scale.ymin = 0.02, list.size = 14) %>%
+  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
+fiplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 1, yaxis = 3,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size-1, title.size = title.size, title = "Occupation clusters", print.list = TRUE,
+                            str4wrap = 30, list.scale.y.ony = c(0.30,0,-0.30), list.scale.y.onx = c(0.1,0.18,0.26)+0.1, list.xmin.scale = 0.20, list.scale.ymin = 0.03, list.size = 14) %>%
+  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 
-fiplt_all_34 <- get.FacPlot(eigres_all, pcares_all$fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 3, yaxis = 4,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE, 
-                            str4wrap = 22, list.scale.y.ony = c(0.30,0,-0.30), list.scale.y.onx = c(0.1,0.16,0.22)+0.08, list.scale.ymin = 0.03, list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+# fiplt_all_34 <- get.FacPlot(eigres_all, pcares_all$fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 3, yaxis = 4,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE, 
+#                             str4wrap = 22, list.scale.y.ony = c(0.30,0,-0.30), list.scale.y.onx = c(0.1,0.16,0.22)+0.08, list.scale.ymin = 0.03, list.size = 12) %>%
+#   arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
 fiplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fi, design = occu.clust$jz45$list, occu.clust$jz45$col, xaxis = 1, yaxis = 2,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE, 
-                          str4wrap = 30, list.ybase = 3, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.03, list.scale.y.ony = c(0.25,0,-0.25), list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                          str4wrap = 30, list.ybase = 3, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.18,0.26)+0.08, list.scale.ymin = 0.03, list.scale.y.ony = c(0.30,0,-0.30), list.size = 14) %>%
+  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 # fiplt_jz45_23 <- get.FacPlot(eigres_45, pcares_45$fi, design = occu.clust$jz45$list, occu.clust$jz45$col, xaxis = 1, yaxis = 3,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title = "Occupation clusters")
 # 
 # fiplt_jz45_34 <- get.FacPlot(eigres_45, pcares_45$fi, design = occu.clust$jz45$list, occu.clust$jz45$col, xaxis = 3, yaxis = 4,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE, 
@@ -215,8 +215,8 @@ fiplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fi, design = occu.clust$jz45$list
 #   arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
 fiplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fi, design = occu.clust$jz123$list, occu.clust$jz123$col, xaxis = 1, yaxis = 2,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = TRUE, 
-                           str4wrap = 30, list.xmin.scale = 0.2, list.scale.ymin = 0.03, list.scale.y.onx = c(0.1,0.18,0.26)+0.05, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                           str4wrap = 30, list.xmin.scale = 0.2, list.scale.ymin = 0.03, list.scale.y.onx = c(0.1,0.18,0.26)+0.05, list.scale.y.ony = c(0.15,0,-0.15), list.size = 14) %>%
+  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 # fiplt_jz123_23 <- get.FacPlot(eigres_123, pcares_123$fi, design = occu.clust$jz123$list, occu.clust$jz123$col, xaxis = 1, yaxis = 3,cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title = "Occupation clusters")
 
 
@@ -224,23 +224,44 @@ fiplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fi, design = occu.clust$jz123$
 #                               str4wrap = 30, list.xmin.scale = 0.2, list.scale.ymin = 0.03, list.scale.y.onx = c(0.1,0.18,0.26)+0.05, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12) %>%
 #   arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
+## rotation ----
+fi.point.size = 4; fi.text.size = 4; title.size = 2
+eigres_allrot <- list(eig = diag(crossprod(pca_allrot_fi)),
+                      tau = 100*diag(crossprod(pca_allrot_fi))/sum(eigres_all$eig))
+eigres_45rot <- list(eig = diag(crossprod(pca_45rot_fi)),
+                      tau = 100*diag(crossprod(pca_45rot_fi))/sum(eigres_45$eig))
+eigres_123rot <- list(eig = diag(crossprod(pca_123rot_fi)),
+                      tau = 100*diag(crossprod(pca_123rot_fi))/sum(eigres_123$eig))
+
+rownames(pca_allrot_fi) <- rownames(pcares_all$fi)
+get.FacPlot(eigres_allrot, pca_allrot_fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 1, yaxis = 2, cex.indiv.point = 1, cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = FALSE, 
+            str4wrap = 30, list.xmin.scale = 0.2, list.scale.y.ony = c(0.2,0,-0.2), list.scale.y.onx = c(0.1,0.16,0.23)+0.05, list.scale.ymin = 0.02, list.size = 14)
+get.FacPlot(eigres_allrot, pca_allrot_fi, design = occu.clust$all$list, occu.clust$all$col, xaxis = 1, yaxis = 3, cex.indiv.point = 1, cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = FALSE, 
+                         str4wrap = 30, list.xmin.scale = 0.2, list.scale.y.ony = c(0.2,0,-0.2), list.scale.y.onx = c(0.1,0.16,0.23)+0.05, list.scale.ymin = 0.02, list.size = 14)
+rownames(pca_45rot_fi) <- rownames(pcares_45$fi)
+get.FacPlot(eigres_45rot,pca_45rot_fi, design = occu.clust$jz45$list, occu.clust$jz45$col, xaxis = 1, yaxis = 2,cex.indiv.point = 1, cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = FALSE, 
+            str4wrap = 30, list.ybase = 3, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.18,0.26)+0.08, list.scale.ymin = 0.03, list.scale.y.ony = c(0.30,0,-0.30), list.size = 14)
+rownames(pca_123rot_fi) <- rownames(pcares_123$fi)
+get.FacPlot(eigres_123rot, pca_123rot_fi, design = occu.clust$jz123$list, occu.clust$jz123$col, xaxis = 1, yaxis = 2,cex.indiv.point = 1, cex.mean.point = fi.point.size, cex.mean.text = fi.text.size, title.size = title.size, title = "Occupation clusters", print.list = FALSE, 
+            str4wrap = 30, list.xmin.scale = 0.2, list.scale.ymin = 0.03, list.scale.y.onx = c(0.1,0.18,0.26)+0.05, list.scale.y.ony = c(0.15,0,-0.15), list.size = 14)
+  
 # ---- fj.plots ----
 fj.point.size = 8; fj.text.size = 10
 
 fjplt_all <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
-                         str4wrap = 30, list.ybase = 24, list.scale.y.ony = c(0.15,0,-0.15), list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.05, list.size = 12)  %>%
-  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                         str4wrap = 30, list.ybase = 24, list.scale.y.ony = c(0.15,0,-0.15), list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.05, list.size = 12)
+  # arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 fjplt_all_23 <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits",
-                            str4wrap = 30, list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.03, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                            str4wrap = 30, list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.03, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12)
+  # arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
-fjplt_all_34 <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 3, yaxis = 4,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
-                            str4wrap = 30, list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.03, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+# fjplt_all_34 <- get.FacPlot(eigres_all, pcares_all$fj, design = trt.clust$all$list, trt.clust$all$col, xaxis = 3, yaxis = 4,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
+#                             str4wrap = 30, list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.scale.ymin = 0.03, list.scale.y.ony = c(0.15,0,-0.15), list.size = 12) %>%
+#   arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
 fjplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list, trt.clust$jz45$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
-                          list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.ony = c(0.15,0,-0.15), list.scale.ymin = 0.04, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                          list.ybase = 10, list.xmin.scale = 0.2, list.scale.y.ony = c(0.15,0,-0.15), list.scale.ymin = 0.04, list.scale.y.onx = c(0.1,0.16,0.22)+0.05, list.size = 12)
+  # arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 # fjplt_jz45_23 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list, trt.clust$jz45$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title = "Job trait clusters")
 
 # fjplt_jz45_34 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list, trt.clust$jz45$col, xaxis = 3, yaxis = 4,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
@@ -248,8 +269,8 @@ fjplt_jz45 <- get.FacPlot(eigres_45, pcares_45$fj, design = trt.clust$jz45$list,
 #   arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
 fjplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$list, trt.clust$jz123$col, xaxis = 1, yaxis = 2,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits",
-                           str4wrap = 25, list.ybase = 5, list.scale.ymin = 0.03, list.scale.y.ony = c(0.20,0,-0.20), list.scale.y.onx = c(0.1,0.17,0.24)+0.05, list.size = 12) %>%
-  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+                           str4wrap = 25, list.ybase = 5, list.scale.ymin = 0.03, list.scale.y.ony = c(0.20,0,-0.20), list.scale.y.onx = c(0.1,0.17,0.24)+0.05, list.size = 12)
+# arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 # fjplt_jz123_23 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$list, trt.clust$jz123$col, xaxis = 1, yaxis = 3,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title = "Job trait clusters")
 
 # fjplt_jz123_34 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$list, trt.clust$jz123$col, xaxis = 3, yaxis = 4,cex.mean.point = fj.point.size, cex.mean.text = fj.text.size, TiLab = TRUE, title.size = title.size, title = "Trait clusters", print.list = TRUE, list.title = "traits", 
@@ -276,47 +297,75 @@ fjplt_jz123 <- get.FacPlot(eigres_123, pcares_123$fj, design = trt.clust$jz123$l
 #   theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
 # dev.off()
 
-### vertical
-png(filename =  "Figure2a-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
-grid.arrange(grobs = list(jbplt_all, fiplt_all, fjplt_all),
-             widths = c(0.2, 1.5,0.2),
-             heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+### horizontal (for the revision)
+png(filename =  "Figure2_600dpi.png", width = 80, height = 75, units = "cm", bg = "white",res = 600)
+grid.arrange(grobs = list(jbplt_all, fiplt_all),#, fjplt_all),
+             widths = c(0.25, 1.5,0.25),#c(0.8, 1,0.5),
+             heights = c(0.8, 0.2, 1.6, 0.3),# 1.5, 0.3),
              layout_matrix = rbind(c(NA, 1, NA),
                                    c(NA, NA, NA),
                                    c(NA, 2, NA),
-                                   c(NA, NA, NA),
-                                   c(NA, 3, NA),
-                                   c(NA, NA, NA)))+
-  theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+                                   c(NA, NA, NA)
+                                   ))+
+  theme(plot.margin = margin(1,1,1,1, "cm"))
 dev.off()
 
-# ## vertical
-png(filename =  "Figure2b-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
-grid.arrange(grobs = list(jbplt_all_23, fiplt_all_23, fjplt_all_23),
-             widths = c(0.2, 1.5,0.2),
-             heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
-             layout_matrix = rbind(c(NA, 1, NA),
-                                   c(NA, NA, NA),
-                                   c(NA, 2, NA),
-                                   c(NA, NA, NA),
-                                   c(NA, 3, NA),
-                                   c(NA, NA, NA)))+
-  theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+png(filename =  "Supp5_r1.png", width = 90, height =50, units = "cm", bg = "white",res = 300)
+grid.arrange(grobs = list(fjplt_all),
+             widths = c(0.4, 1,0.5),
+             layout_matrix = rbind(c(NA, 1, NA)))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
 dev.off()
 
-## Components 3 & 4
-png(filename =  "Figure2c-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
-grid.arrange(grobs = list(jbplt_all_34, fiplt_all_34, fjplt_all_34),
-             widths = c(0.2, 1.5,0.2),
-             heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+# # ## vertical (for the first submitted version)
+# png(filename =  "Figure2b-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+# grid.arrange(grobs = list(jbplt_all_23, fiplt_all_23, fjplt_all_23),
+#              widths = c(0.2, 1.5,0.2),
+#              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+#              layout_matrix = rbind(c(NA, 1, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 2, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 3, NA),
+#                                    c(NA, NA, NA)))+
+#   theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+# dev.off()
+
+
+### horizontal (for the revision)
+png(filename =  "Figure3_600dpi.png", width = 80, height =65, units = "cm", bg = "white",res = 600)
+grid.arrange(grobs = list(jbplt_all_23, fiplt_all_23),
+             widths = c(0.5, 1.3,0.5),
+             heights = c(0.8, 0.1, 1.6, 0.1),
              layout_matrix = rbind(c(NA, 1, NA),
                                    c(NA, NA, NA),
                                    c(NA, 2, NA),
-                                   c(NA, NA, NA),
-                                   c(NA, 3, NA),
-                                   c(NA, NA, NA)))+
-  theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+                                   c(NA, NA, NA)
+             ))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
 dev.off()
+
+png(filename =  "Supp6_r1.png", width = 90, height =50, units = "cm", bg = "white",res = 300)
+grid.arrange(grobs = list(fjplt_all_23),
+             widths = c(0.4, 1,0.5),
+             layout_matrix = rbind(c(NA, 1, NA)))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
+dev.off()
+
+# 
+# ## Components 3 & 4
+# png(filename =  "Figure2c-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+# grid.arrange(grobs = list(jbplt_all_34, fiplt_all_34, fjplt_all_34),
+#              widths = c(0.2, 1.5,0.2),
+#              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+#              layout_matrix = rbind(c(NA, 1, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 2, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 3, NA),
+#                                    c(NA, NA, NA)))+
+#   theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+# dev.off()
 
 
 ## Figure 3
@@ -333,17 +382,37 @@ dev.off()
 # dev.off()
 
 ### vertical
-png(filename =  "Figure3-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
-grid.arrange(grobs = list(jbplt_jz45, fiplt_jz45, fjplt_jz45),
-             widths = c(0.2, 1.5,0.2),
-             heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+# png(filename =  "Figure3-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+# grid.arrange(grobs = list(jbplt_jz45, fiplt_jz45, fjplt_jz45),
+#              widths = c(0.2, 1.5,0.2),
+#              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+#              layout_matrix = rbind(c(NA, 1, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 2, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 3, NA),
+#                                    c(NA, NA, NA)))+
+#   theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+# dev.off()
+
+### horizontal (for the revision)
+png(filename =  "Figure4_600dpi.png", width = 80, height =70, units = "cm", bg = "white",res = 600)
+grid.arrange(grobs = list(jbplt_jz45, fiplt_jz45),
+             widths = c(0.25, 1.5,0.25),
+             heights = c(0.8, 0.3, 1.6, 0.3),
              layout_matrix = rbind(c(NA, 1, NA),
                                    c(NA, NA, NA),
                                    c(NA, 2, NA),
-                                   c(NA, NA, NA),
-                                   c(NA, 3, NA),
-                                   c(NA, NA, NA)))+
-  theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+                                   c(NA, NA, NA)
+             ))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
+dev.off()
+
+png(filename =  "Supp7_r1.png", width = 90, height =50, units = "cm", bg = "white",res = 300)
+grid.arrange(grobs = list(fjplt_jz45),
+             widths = c(0.4, 1,0.5),
+             layout_matrix = rbind(c(NA, 1, NA)))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
 dev.off()
 
 ## Figure 4
@@ -360,17 +429,37 @@ dev.off()
 # dev.off()
 
 ### vertical
-png(filename =  "Figure4-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
-grid.arrange(grobs = list(jbplt_jz123, fiplt_jz123, fjplt_jz123),
-             widths = c(0.3, 1.5,0.3),
-             heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+# png(filename =  "Figure4-CW_202203.png", width = 70, height =100, units = "cm", bg = "white",res = 300)
+# grid.arrange(grobs = list(jbplt_jz123, fiplt_jz123, fjplt_jz123),
+#              widths = c(0.3, 1.5,0.3),
+#              heights = c(0.8, 0.3, 1.5, 0.3, 1.5, 0.3),
+#              layout_matrix = rbind(c(NA, 1, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 2, NA),
+#                                    c(NA, NA, NA),
+#                                    c(NA, 3, NA),
+#                                    c(NA, NA, NA)))+
+#   theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+# dev.off()
+
+### horizontal (for the revision)
+png(filename =  "Figure5_600dpi.png", width = 70, height =70, units = "cm", bg = "white",res = 600)
+grid.arrange(grobs = list(jbplt_jz123, fiplt_jz123),
+             widths = c(0.20, 1.5,0.25),
+             heights = c(0.8, 0.3, 1.6, 0.3),
              layout_matrix = rbind(c(NA, 1, NA),
                                    c(NA, NA, NA),
                                    c(NA, 2, NA),
-                                   c(NA, NA, NA),
-                                   c(NA, 3, NA),
-                                   c(NA, NA, NA)))+
-  theme(plot.margin = margin(0.5,0.5,0.5,0.5, "cm"))
+                                   c(NA, NA, NA)
+             ))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
+dev.off()
+
+png(filename =  "Supp8_r1.png", width = 90, height = 50, units = "cm", bg = "white",res = 300)
+grid.arrange(grobs = list(fjplt_jz123),
+             widths = c(0.4, 1,0.5),
+             layout_matrix = rbind(c(NA, 1, NA)))+
+  theme(plot.margin = margin(1,0.5,1,0.5, "cm"))
 dev.off()
 
 # # ---- merge.plots (with tables) ----

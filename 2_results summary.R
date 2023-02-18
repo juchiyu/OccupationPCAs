@@ -73,12 +73,12 @@ occu.clust$all$names <- c('1' = "FinMedLglSpec",
                           '9' = "SciEngi",
                           '10'= "Labor",
                           '11'= "EnviroSaftey",
-                          '12'= "ObjectTech",
+                          '12'= "BioTech",
                           '13'= "SocSci",
                           '14'= "EnviroSustain",
                           '15'= "ITSpec",
                           '16'= "MathSpatial",
-                          '17'= "BioTech",
+                          '17'= "ObjectTech",
                           '18'= "FinMedLglClerks")
 occu.clust$jz45$names <- c('1' = "BusGovt",
                            '2' = "AltThrpy",
@@ -90,14 +90,14 @@ occu.clust$jz45$names <- c('1' = "BusGovt",
                            '8' = "MedSpec",
                            '9' = "CompSci",
                            '10'= "SciMaths")
-occu.clust$jz123$names <- c('1' = "Organizational",
+occu.clust$jz123$names <- c('1' = "Managerial",
                             '2' = "HealthTech",
-                            '3' = "Repair&Maint",
-                            '4' = "HeavyMach",
-                            '5' = "Art",
+                            '3' = "LabourFineMotor",
+                            '4' = "LabourGrossMotor",
+                            '5' = "ServiceTech",
                             '6' = "PublicSafe",
-                            '7' = "Technician",
-                            '8' = "Service",
+                            '7' = "EngEnviroTech",
+                            '8' = "ServiceSocial",
                             '9' = "Clerk",
                             '10' = "Production")
 
@@ -279,9 +279,9 @@ assigncol <- function(target.list, col4clust){
 #                           Production     = "orange2")
 
 ## Gradient colors from the color wheel ----
-occu.colfunc <- colorRampPalette(c("forestgreen", "gold"))
+occu.colfunc <- colorRampPalette(c("forestgreen", "gold2"))
 
-getColorFromTheWheel <- function(f.scores, design, order.dim = 1, color.range = c("#006e00", "#efc900")){
+getColorFromTheWheel <- function(f.scores, design, order.dim = 1, color.range = c("#006e00", "#e6b207")){
   mean.f <- getMeans(f.scores, design)[,1:2]
   ordered.f <- mean.f[order(mean.f[,1]),]
   colfunc <- colorRampPalette(color.range)

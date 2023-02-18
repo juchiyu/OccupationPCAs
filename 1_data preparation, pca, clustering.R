@@ -22,6 +22,9 @@ library(data4PCCAR)
 # Read data ----
 onet_data <- read.csv("Data\\AKS-ONET-JZ-CAT-FEB2020.csv")
 
+# Read data for Moriah
+onet_data <- read_csv("Data/AKS-ONET-JZ-CAT-FEB2020.csv")
+
 # Prepping ----
 ## remove demographics and categorical data
 onet_all <- onet_data[, c(3:122)]
@@ -39,6 +42,7 @@ onet.jz_123 <- subset(onet_data$Job.Zone, onet_data$Job.Zone < 4)
 names(onet.jz_all) <- rownames(onet_data)
 names(onet.jz_45) <- rownames(onet_data[onet_data$Job.Zone >= 4,])
 names(onet.jz_123) <- rownames(onet_data[onet_data$Job.Zone < 4,])
+
 
 # run PCAs ----
 ## all job zones
@@ -63,3 +67,32 @@ fit.c_123 <- dist(pca_123$Fixed.Data$ExPosition.Data$fj[,1:7], method = "euclide
 # save results ----
 rm(list=lsf.str()) # remove functions
 save.image(file = "Results/from1_DatPcaClus.rda")
+
+
+# test rotation ----
+pca_all_varmax <- varimax(pca_all$Fixed.Data$ExPosition.Data$pdq$q[,1:7])
+pca_45_varmax <- varimax(pca_45$Fixed.Data$ExPosition.Data$pdq$q[,1:6])
+pca_123_varmax <- varimax(pca_123$Fixed.Data$ExPosition.Data$pdq$q[,1:7])
+
+pca_allrot_fj <- pca_all$Fixed.Data$ExPosition.Data$fj[,1:7] %*% pca_all_varmax$rotmat
+pca_allrot_fi <- pca_all$Fixed.Data$ExPosition.Data$fi[,1:7] %*% pca_all_varmax$rotmat
+
+pca_45rot_fj <- pca_45$Fixed.Data$ExPosition.Data$fj[,1:6] %*% pca_45_varmax$rotmat
+pca_45rot_fi <- pca_45$Fixed.Data$ExPosition.Data$fi[,1:6] %*% pca_45_varmax$rotmat
+
+pca_123rot_fj <- pca_123$Fixed.Data$ExPosition.Data$fj[,1:7] %*% pca_123_varmax$rotmat
+pca_123rot_fi <- pca_123$Fixed.Data$ExPosition.Data$fi[,1:7] %*% pca_123_varmax$rotmat
+
+# re-run clustering analysis ----
+## all job zones
+fit.r_all <- dist(pca_allrot_fi[,1:7], method = "euclidean") %>% hclust(method = "ward.D2")
+fit.c_all <- dist(pca_allrot_fj[,1:7], method = "euclidean") %>% hclust(method = "ward.D2")
+## job zones 45
+fit.r_45 <- dist(pca_45rot_fi[,1:6], method = "euclidean") %>% hclust(method = "ward.D2")
+fit.c_45 <- dist(pca_45rot_fj[,1:4], method = "euclidean") %>% hclust(method = "ward.D2")
+fit.c_45_6fac <- dist(pca_45rot_fj[,1:6], method = "euclidean") %>% hclust(method = "ward.D2")
+## job zones 123
+fit.r_123 <- dist(pca_123rot_fi[,1:7], method = "euclidean") %>% hclust(method = "ward.D2")
+fit.c_123 <- dist(pca_123rot_fj[,1:7], method = "euclidean") %>% hclust(method = "ward.D2")
+
+save.image(file = "Results/from1_withRotation.rda")

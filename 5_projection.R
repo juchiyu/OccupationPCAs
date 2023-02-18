@@ -60,6 +60,8 @@ rockland.filter$wasi_diff_comp <- rockland.filter$wasi_vci_comp - rockland.filte
 rockland.filter$wasi_diff_grp <- ifelse(abs(rockland.filter$wasi_diff_comp) < 10, "Same", 
                                         ifelse(rockland.filter$wasi_diff_comp > 0, "VCI+", "PRI+"))
 
+gnd.idx <- c("1" = "Male", "2" = "Female")
+rockland.filter$sex_recode <- dplyr::recode(rockland.filter$sex_m1f2, !!!gnd.idx)
 
 ## Use wasi as design
 wasi.grp.idx <- c("Same" = "grey60",
@@ -98,11 +100,12 @@ proj.wasi.occu <- createFactorMap(data2plot,
                                   alpha.axes = 0.5,
                                   col.axes = "#42376B",
                                   width.axes = 1,
-                                  title = "Project the Rockland data onto\nthe Cognitive PCA space")
+                                  title = "Project the Rockland data onto\nthe Job Zones 4-5 PCA space")
 
 
 wasi.occu.boot <- Boot4Mean(data2plot, rockland.filter$wasi_diff_grp, niter = 1000)
-wasi.occu.boot.gnd <- Boot4Mean(data2plot, paste0(rockland.filter$wasi_diff_grp, rockland.filter$sex_m1f2), niter = 1000)
+# wasi.occu.boot.gnd <- Boot4Mean(data2plot, paste0(rockland.filter$wasi_diff_grp, rockland.filter$sex_recode), niter = 1000)
+wasi.occu.boot.gnd <- Boot4Mean(data2plot, rockland.filter$sex_recode, niter = 1000)
 
 proj.wasi.mean <- createFactorMap(wasi.occu.boot$GroupMeans[c(1,3),],
                                   axis1 = 2, axis2 = 1,
@@ -114,15 +117,26 @@ proj.wasi.mean <- createFactorMap(wasi.occu.boot$GroupMeans[c(1,3),],
                                   text.cex = 10)
 
 # proj.wasi.mean.gnd <- createFactorMap(wasi.occu.boot.gnd$GroupMeans[c(1:2,5:6),],
-                                      # col.points = rep(wasi.grp.col$gc[rownames(wasi.occu.boot$GroupMeans)[c(1,3)],], each = 2),
-                                      # col.labels = rep(wasi.grp.col$gc[rownames(wasi.occu.boot$GroupMeans)[c(1,3)],], each = 2),
-                                      # alpha.points = 1,
-                                      # pch = 1,
-                                      # cex = 2,
-                                      # text.cex = 3,
-                                      # col.background = NULL,
-                                      # col.axes = "#42376B",
-                                      # width.axes = 1)
+#                                       col.points = rep(wasi.grp.col$gc[rownames(wasi.occu.boot$GroupMeans)[c(1,3)],], each = 2),
+#                                       col.labels = rep(wasi.grp.col$gc[rownames(wasi.occu.boot$GroupMeans)[c(1,3)],], each = 2),
+#                                       alpha.points = 1,
+#                                       pch = 1,
+#                                       cex = 2,
+#                                       text.cex = 3,
+#                                       col.background = NULL,
+#                                       col.axes = "#42376B",
+#                                       width.axes = 1)
+
+proj.wasi.mean.gnd <- createFactorMap(wasi.occu.boot.gnd$GroupMeans,
+                                      col.points = c("indianred3", "royalblue2"),
+                                      col.labels = c("indianred3", "royalblue2"),
+                                      alpha.points = 1,
+                                      pch = 1,
+                                      cex = 2,
+                                      text.cex = 3,
+                                      col.background = NULL,
+                                      col.axes = "#42376B",
+                                      width.axes = 1)
 
 wasi.mean.ci <- MakeCIEllipses(wasi.occu.boot$BootCube[c(1,3),,], 
                                axis1 = 1, axis2 = 2,
@@ -132,10 +146,18 @@ wasi.mean.ci <- MakeCIEllipses(wasi.occu.boot$BootCube[c(1,3),,],
                                line.size = 0.7)
 
 # wasi.mean.gnd.ci <- MakeCIEllipses(wasi.occu.boot.gnd$BootCube[c(1:2,5:6),,],
+#                                    axis1 = 2, axis2 = 1,
 #                                names.of.factors = paste0("Component ", c(1:2)),
 #                                col = rep(wasi.grp.col$gc[rownames(wasi.occu.boot$BootCube[c(1,3),,]),], each = 2),
 #                                alpha.ellipse = 0.1,
 #                                line.size = 0.7)
+
+wasi.mean.gnd.ci <- MakeCIEllipses(wasi.occu.boot.gnd$BootCube,
+                                   axis1 = 2, axis2 = 1,
+                                   names.of.factors = paste0("Component ", c(1:2)),
+                                   col = c("indianred3", "royalblue2"),
+                                   alpha.ellipse = 0.1,
+                                   line.size = 0.7)
 
 Rockland.cog <- proj.wasi.occu$zeMap_background + proj.wasi.occu$zeMap_dots + wasi.mean.ci + 
   proj.wasi.mean$zeMap_dots + proj.wasi.mean$zeMap_text +
@@ -150,9 +172,11 @@ Rockland.cog <- proj.wasi.occu$zeMap_background + proj.wasi.occu$zeMap_dots + wa
 Rockland.cog %<>% 
   arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y   = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
 
-proj.wasi.mean.gnd$zeMap_background + proj.wasi.occu$zeMap_dots + wasi.mean.ci + #wasi.mean.gnd.ci +
-  proj.wasi.mean$zeMap_dots + proj.wasi.mean$zeMap_text #+ proj.wasi.mean.gnd$zeMap_dots + proj.wasi.mean.gnd$zeMap_text
+proj.wasi.occu$zeMap_background + wasi.mean.gnd.ci +
+  proj.wasi.mean.gnd$zeMap_dots + proj.wasi.mean.gnd$zeMap_text
 
+proj.wasi.mean.gnd$zeMap_background + proj.wasi.occu$zeMap_dots + wasi.mean.ci + #wasi.mean.gnd.ci +
+  proj.wasi.mean$zeMap_dots + proj.wasi.mean$zeMap_text
 
 
   
@@ -168,6 +192,14 @@ model_VCI_PRI_STEM  %>% summary()
 model_VCI_PRI_STEM  %>% effectsize()
 model_VCI_PRI_STEM  %>% eta_squared()
 model_VCI_PRI_STEM  %>% vif()
+
+model_VCI_PRI_x_STEM = lm(dim1_45 ~ sex_m1f2*(wasi_vci_comp + wasi_pri_comp), data = rockland.filter.new)
+model_VCI_PRI_x_STEM  %>% summary()
+model_VCI_PRI_x_STEM  %>% effectsize()
+model_VCI_PRI_x_STEM  %>% eta_squared()
+model_VCI_PRI_x_STEM  %>% vif()
+
+
 
 #bivariate correlations
 cor(rockland.filter.new$dim1_45, rockland.filter.new$wasi_vci_comp, method = "pearson")
@@ -192,6 +224,13 @@ model_diff_STEM %>% summary()
 model_diff_STEM  %>% effectsize()
 model_diff_STEM  %>% eta_squared()
 model_diff_STEM  %>% vif()
+
+
+model_diff_x_STEM <- lm(dim1_45 ~ sex_m1f2*wasi_diff_comp, data = rockland.filter.new)
+model_diff_x_STEM %>% summary()
+model_diff_x_STEM  %>% effectsize()
+model_diff_x_STEM  %>% eta_squared()
+model_diff_x_STEM  %>% vif()
 
 
 
@@ -344,7 +383,7 @@ corrplot(corr, method = "shade", addCoef.col = "black",
 # b3.jolieggMap.J.Q45
 
 ## Output figures ====
-png(filename =  "Figure6_202206-withHist3.png", width = 60, height = 60, units = "cm", bg = "white",res = 300)
+png(filename =  "Figure6_600dpi.png", width = 60, height = 60, units = "cm", bg = "white",res = 600)
 grid.arrange(grobs = list(rock.hist, Rockland.cog, scatter_dim1_wasi, scatter_dim1_diff_wasi),
              widths = c(1, 0.1, 1),
              heights = c(1,1),

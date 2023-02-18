@@ -31,7 +31,7 @@ load("Results/from2_Dat4Plot.rda")
 
 # ---- Scree ----
 PlotMyScree <- function(eigres, color.sig = "mediumorchid4", color.ns = "grey60",
-                        cex.sig = 1.1, cex.ns = 0.5, text.cex = 10, lwd = 1, title = NULL, xlab = "Components"){
+                        cex.sig = 1.1, cex.ns = 0.5, text.cex = 15, lwd = 1, title = NULL, xlab = "Components"){
   eigres %>% as.data.frame %>% ggplot(aes(x = 1:length(eig), y = tau)) +
     geom_line(color = "grey40", size = lwd) +
     geom_point(aes(color = as.character(eigres$pval < .05), size = as.character(eigres$pval < .05))) +
@@ -49,11 +49,11 @@ PlotMyScree <- function(eigres, color.sig = "mediumorchid4", color.ns = "grey60"
           panel.border = element_rect(color = "black", fill = "transparent"))
 }
 scree_all <- PlotMyScree(eigres_all, cex.sig = 8, cex.ns = 5, text.cex = 30, lwd = 2, title = "All Job Zones", xlab = "") %>%
-  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+  arrangeGrob(top = textGrob(expression(bold("A")), x = unit(0, "npc"), y = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 scree_45 <- PlotMyScree(eigres_45, cex.sig = 8, cex.ns = 5, text.cex = 30, lwd = 2, title = "Job Zones 4 & 5", xlab = "") %>%
-  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+  arrangeGrob(top = textGrob(expression(bold("B")), x = unit(0, "npc"), y = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 scree_123 <- PlotMyScree(eigres_123, cex.sig = 8, cex.ns = 5, text.cex = 30, lwd = 2, title = "Job Zones 1, 2, & 3") %>%
-  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=40)))
+  arrangeGrob(top = textGrob(expression(bold("C")), x = unit(0, "npc"), y = unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", fontsize=50)))
 
 # ---- row.cluster ----
 plot.dend <- function(hc, k, clust.info,
@@ -122,12 +122,12 @@ plot.dend <- function(hc, k, clust.info,
 }
 
 # get dendrogram data
-get.dend.r_all <- plot.dend(fit.r_all, 18, occu.clust$all, size.label = 25, show.n.size = 8, adjust.title.y = 60, x.label = "",
-                            show.nlabel.size = 10)
-get.dend.r_jz45 <- plot.dend(fit.r_45, 10, occu.clust$jz45, size.label = 25, show.n.size = 8, adjust.title.y = 40, x.label = "", 
-                             coord.xlim = c(max(get.dend.r_all$seg_dat$x), -450), top.dend.label = "", top.n.label = "") #25
-get.dend.r_jz123 <- plot.dend(fit.r_123, 10, occu.clust$jz123, size.label = 30, show.n.size = 8, adjust.title.y = 40, 
-                              coord.xlim = c(max(get.dend.r_all$seg_dat$x), -450), top.dend.label = "", top.n.label = "") #25
+get.dend.r_all <- plot.dend(fit.r_all, 18, occu.clust$all, size.label = 40, show.n.size = 14, adjust.title.y = 60, #x.label = "",
+                            offset.clustN = -450, show.nlabel.size = 14)
+get.dend.r_jz45 <- plot.dend(fit.r_45, 10, occu.clust$jz45, size.label = 40, show.n.size = 14, adjust.title.y = 40, #x.label = "", 
+                             offset.clustN = -400, show.nlabel.size = 14, coord.xlim = c(max(get.dend.r_all$seg_dat$x), -450))#, top.dend.label = "", top.n.label = "") #25
+get.dend.r_jz123 <- plot.dend(fit.r_123, 10, occu.clust$jz123, size.label = 40, show.n.size = 14, adjust.title.y = 40, 
+                              offset.clustN = -450, show.nlabel.size = 14,  coord.xlim = c(max(get.dend.r_all$seg_dat$x), -450))#, top.dend.label = "", top.n.label = "") #25
 
 # plot the trees
 dend.r_all <-  get.dend.r_all$dend + 
@@ -232,12 +232,22 @@ dend.c_jz123 <- get.dend.c_jz123 +
 dend.c_jz123
 
 # ---- merge.plots ----
-png(filename =  "Figure1_202203.png", width = 90, height = 80, units = "cm", bg = "white",res = 300)
-ggarrange(scree_all, dend.r_all, dend.c_all,
-          scree_45, dend.r_jz45, dend.c_jz45,
-          scree_123, dend.r_jz123, dend.c_jz123,
-          nrow = 3, ncol = 3,
-          widths = c(1,1,2.5),
-          heights = c(1.2,1,1))+
+# png(filename =  "Figure1_202203.png", width = 90, height = 80, units = "cm", bg = "white",res = 300)
+# ggarrange(scree_all, dend.r_all, dend.c_all,
+#           scree_45, dend.r_jz45, dend.c_jz45,
+#           scree_123, dend.r_jz123, dend.c_jz123,
+#           nrow = 3, ncol = 3,
+#           widths = c(1,1,2.5),
+#           heights = c(1.2,1,1))+
+#   theme(plot.margin = margin(0.5,0,0.5,1, "cm"))
+# dev.off()
+
+png(filename =  "Figure1_600dpi.png", width = 90, height = 80, units = "cm", bg = "white",res = 600)
+ggarrange(scree_all, scree_45, scree_123, 
+          dend.r_all,dend.r_jz45, dend.r_jz123,
+          nrow = 2, ncol = 3, 
+          widths = c(1,1,1),
+          heights = c(1,3))+
   theme(plot.margin = margin(0.5,0,0.5,1, "cm"))
+# ggsave("Figure1_600dpi.eps", width = 90, height = 80, units = "cm", bg = "white", dpi = 600)
 dev.off()
