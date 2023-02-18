@@ -31,9 +31,9 @@ ui <- navbarPage(
              fluidRow(
                  column(2,
                         selectInput("pca", "Select job zones:",
-                                    choices = list("All job zones (General)" = "all",
-                                                   "1, 2, & 3 (Labor)" = "123",
-                                                   "4 & 5 (Cognitive)" = "45"),
+                                    choices = list("All Job Zones PCA (General)" = "all",
+                                                   "Job Zones 1-3 PCA" = "123",
+                                                   "Job Zones 4-5 PCA" = "45"),
                                     width = '100%'
                                     ),
                         numericInput("comp1", "Horizontal Axis Component", 1,
@@ -318,9 +318,9 @@ server <- function(input, output) {
       showModal(modalDialog(
         title = "Credits",
         h4("Project authors"),
-        p("Ju-Chi Yu, H. Moriah Sokolowski, Kirthana Rao, Luke Moraglia, Soudeh Khoubrouy, Hervé Abdi, and Brian Levine"),
+        p("Ju-Chi Yu, H. Moriah Sokolowski, Kirthana S. Rao, Luke E. Moraglia, Soudeh A. Khoubrouy, Hervé Abdi, and Brian Levine"),
         h4("Shiny App developers"),
-        p("Luke Moraglia and Ju-Chi Yu"),
+        p("Luke E. Moraglia and Ju-Chi Yu"),
         h4("Source Code"),
         p("Source code for the analyses, Shiny app, and information about this project can be found in our ",
           a("GitHub repository", href = "https://github.com/juchiyu/OccupationPCAs"),
